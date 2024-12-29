@@ -10,12 +10,14 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 public class IntakeV4bSys extends SubsystemBase {
     private final SimpleServo pr, pitch;
 
-    public static double POS_MID = 0.5;
-    public static double POS_DOWN = 0.38;
+    public static double POS_MID = 0.51;
+    public static double POS_DOWN = 0.44;
     public static double POS_IN = 0.83;
 
-    public static double ROLL_IN = 0.5;
+    public static double ROLL_IN = 0.46;
+    public static double ROLL_MID = 0.8; //0.76
     public static double ROLL_OUT = 0.76;
+
 
     public static double ROLL_OUT_SPECIMEN = 0.8;
     public static double POS_OUT_SPECIMEN = 0.38;
@@ -41,6 +43,6 @@ public class IntakeV4bSys extends SubsystemBase {
     public Command goToRoll(double pos) {return new InstantCommand(() -> pitch.setPosition(pos));}
 
     public Command dropOff() {return new ParallelCommandGroup(goToPos(POS_IN), goToRoll(ROLL_IN), new InstantCommand(()->state = State.IN));}
-    public Command intake() {return new ParallelCommandGroup(goToRoll(ROLL_OUT),goToPos(POS_MID), new InstantCommand(()->state = State.OUT));}
+    public Command intake() {return new ParallelCommandGroup(goToRoll(ROLL_MID),goToPos(POS_MID), new InstantCommand(()->state = State.OUT));}
 
 }

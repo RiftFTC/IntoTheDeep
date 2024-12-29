@@ -33,7 +33,7 @@ import static com.arcrobotics.ftclib.gamepad.GamepadKeys.Trigger.RIGHT_TRIGGER;
 public class BaseOpMode extends CommandOpMode {
     protected GamepadEx gamepadEx1, gamepadEx2;
     protected MotorEx fl, fr, bl, br, lil, lir, hang;
-
+    private double loopTime = 0;
     protected SimpleServo ipr, iPitch, extL, extR, iClaw, iYaw, oClaw, oPitch, oPos, transmission;
     protected TouchSensor touch;
     protected GoBildaPinpointDriverRR odo;
@@ -141,36 +141,18 @@ public class BaseOpMode extends CommandOpMode {
 
     @Override
     public void run() {
-        liftSys.periodic();
-        long startTime = System.nanoTime();
         super.run();
-        activityManager.getMemoryInfo(memoryInfo);
-        tad("Available Memory", (float) memoryInfo.availMem / (float) memoryInfo.totalMem * 100.0F);
-        tad("Loop Time (ms)", System.nanoTime() - startTime / 1e6);
+//        activityManager.getMemoryInfo(memoryInfo);
+//        tad("Available Memory", (float) memoryInfo.availMem / (float) memoryInfo.totalMem * 100.0F);
         tad("ANGLE", pipeline.getAngle());
         tad("FPS", camera.getFps());
-        tad("Pipeline Time (ms)", camera.getPipelineTimeMs());
-        tad("Frame Count", camera.getFrameCount());
-        tad("Lift Sys target POS", liftSys.getCurrentTarget());
-        tad("Lift Sys current pos", liftSys.getPosition());
-        tad("Current Game State" , timeSys.getGameState());
-        tad("FL Current", fl.motorEx.getCurrent(CurrentUnit.AMPS));
-        tad("FR Current", fr.motorEx.getCurrent(CurrentUnit.AMPS));
-        tad("BL Current", bl.motorEx.getCurrent(CurrentUnit.AMPS));
-        tad("BR Current", br.motorEx.getCurrent(CurrentUnit.AMPS));
         tad("LIL Current", lil.motorEx.getCurrent(CurrentUnit.AMPS));
         tad("LIR Current", lir.motorEx.getCurrent(CurrentUnit.AMPS));
-        liftSys.periodic();
+        double loop = System.nanoTime();
+        telemetry.addData("hz ", 1000000000 / (loop - loopTime));
+        loopTime = loop;
         telemetry.update();
-
     }
 
-    @Override
-    public void reset() {
-        super.reset();
-        camera.stopStreaming();
-        camera.stopRecordingPipeline();
-        camera.closeCameraDevice();
-    }
 
 }

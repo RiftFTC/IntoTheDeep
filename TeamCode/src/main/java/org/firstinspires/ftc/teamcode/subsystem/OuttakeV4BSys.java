@@ -9,12 +9,13 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 @Config
 public class OuttakeV4BSys extends SubsystemBase {
 
-    public static double PITCH_HOME = 0.15;
+    public static double PITCH_HOME = 0.13;
     public static double PITCH_AWAY = 1;
     public static double PITCH_MID = 0.5;
     public static double ARM_MID = 0.5;
     public static double ARM_HOME = 0.7;
     public static double ARM_AWAY= 0.2;
+
 
     public static double ARM_HOME_SPECIMEN = 0.8;
 
@@ -22,8 +23,8 @@ public class OuttakeV4BSys extends SubsystemBase {
     public OuttakeV4BSys(SimpleServo pitch, SimpleServo arm) {
         this.pitch = pitch;
         this.arm = arm;
-        this.pitch.setPosition(PITCH_MID);
-        this.arm.setPosition(ARM_MID);
+        this.pitch.setPosition(0.4);
+        this.arm.setPosition(0.6);
     }
 
     public Command setArm(double position) {

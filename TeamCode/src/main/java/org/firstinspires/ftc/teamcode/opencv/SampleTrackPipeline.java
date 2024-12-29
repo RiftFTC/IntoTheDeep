@@ -15,7 +15,8 @@ import java.util.ArrayList;
 public class SampleTrackPipeline extends OpenCvPipeline {
 
     public final BaseOpMode.TEAM team;
-    public final MovingAverageFilter angleFilter = new MovingAverageFilter(35);
+    public final MovingAverageFilter angleFilter = new MovingAverageFilter(70);
+
     public static boolean drawOnScreen = false;
     public static double sizeThreshold = 3000;
     Mat ycrcbMat = new Mat();

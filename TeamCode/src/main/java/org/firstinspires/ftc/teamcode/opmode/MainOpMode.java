@@ -42,10 +42,12 @@ public class MainOpMode extends BaseOpMode {
                 new ParallelCommandGroup(
                         extendoSys.goTo(ExtendoSys.EXTENDO_MAX),
                         intakeV4bSys.intake(),
+                        outtakeV4bSys.mid(),
                         new InstantCommand(pipeline::enableTracking),
                         intakeClawSys.intake()
                 ),
                 new SequentialCommandGroup(
+                        intakeV4bSys.goToRoll(ROLL_OUT),
                         intakeClawSys.release(),
                         new WaitCommand(150),
                         new InstantCommand(pipeline::disableTracking),
@@ -56,7 +58,6 @@ public class MainOpMode extends BaseOpMode {
                         intakeClawSys.dropoff(),
                         new WaitCommand(150),
                         intakeV4bSys.dropOff(),
-                        new WaitCommand(150),
                         extendoSys.goTo(ExtendoSys.EXTENDO_HOME)
                 )
         );
@@ -64,7 +65,8 @@ public class MainOpMode extends BaseOpMode {
                 new SequentialCommandGroup(
                         outtakeClawSys.release(),
                         new WaitCommand(300),
-                        outtakeV4bSys.mid()
+                        outtakeV4bSys.mid(),
+                        liftSys.goTo(LiftSys.NONE)
                 ),
                 new SequentialCommandGroup(
                         outtakeV4bSys.setPitch(PITCH_HOME),
@@ -126,6 +128,8 @@ public class MainOpMode extends BaseOpMode {
                         intakeV4bSys.goToPos(POS_MID)
                 )
         );
+
+        gb1(GamepadKeys.Button.LEFT_STICK_BUTTON).toggleWhenPressed(intakeClawSys.pinch(), intakeClawSys.release());
 
         driveSys.setDefaultCommand(driveSys.drive(
                 gamepadEx1::getLeftX,

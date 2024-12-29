@@ -14,7 +14,8 @@ import java.util.function.DoubleSupplier;
 
 @Config
 public class IntakeClawSys extends SubsystemBase {
-    public static double MID = 0.4;
+
+    public static double MID = 0.36;
     public static double PINCH = 0.67;
     public static double SUPER_PINCH = 0.69;
 
@@ -30,6 +31,8 @@ public class IntakeClawSys extends SubsystemBase {
     private SampleTrackPipeline pipeline;
 
     DoubleSupplier LTrigger, RTrigger;
+
+    private double lastPos = 0;
 
     public IntakeClawSys(SimpleServo claw, SimpleServo yaw, DoubleSupplier LTrigger, DoubleSupplier RTrigger) {
         this.claw = claw;
@@ -76,7 +79,9 @@ public class IntakeClawSys extends SubsystemBase {
     public void updatePipeline() {
         if (pipeline.getAngle() == -1) return;
 //        yaw.setPosition(Precision.calculateWeightedValue(YAW_LEFT, YAW_RIGHT, (pipeline.getAngle() % 179) / 180));
-        yaw.setPosition(Math.round(Precision.calculateWeightedValue(YAW_LEFT, YAW_RIGHT, (pipeline.getAngle() % 179) / 180) * 10) / 10.0);
+
+        yaw.setPosition(Math.round(Precision.calculateWeightedValue(YAW_LEFT, YAW_RIGHT, (pipeline.getAngle() % 179) / 180) * 5) / 5.0);
+        lastPos = yaw.getAngle();
     }
 
     @Override
