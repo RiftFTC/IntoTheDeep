@@ -17,8 +17,8 @@ import static org.firstinspires.ftc.teamcode.subsystem.IntakeV4bSys.*;
 import static org.firstinspires.ftc.teamcode.subsystem.OuttakeV4BSys.ARM_HOME;
 import static org.firstinspires.ftc.teamcode.subsystem.OuttakeV4BSys.PITCH_HOME;
 @Config
-@Autonomous(name="BlueLeftAuto", group="Autonomous")
-public class BlueLeftAuto extends AutoBaseOpMode{
+@Autonomous(name="Left Auto", group="Autonomous")
+public class LeftAuto extends AutoBaseOpMode{
 
     public static int traj2A = 272;
     TrajectoryActionBuilder preloadDropOffTraj;

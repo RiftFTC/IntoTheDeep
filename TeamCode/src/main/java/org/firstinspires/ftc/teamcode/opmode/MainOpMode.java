@@ -115,7 +115,19 @@ public class MainOpMode extends BaseOpMode {
                 )
         );
 
-        gb1(GamepadKeys.Button.START).whenPressed(transmissionSys.transmissionUp());
+
+
+//        gb2(GamepadKeys.Button.START).whenPressed(
+//                new SequentialCommandGroup(
+//                        liftSys.goTo(LiftSys.LOW_BUCKET),
+//                        new WaitCommand(100),
+//                        new ParallelCommandGroup(
+//                                liftSys.vibrate(1500, 0.2),
+//                                transmissionSys.shiftUp()
+//                        )
+//                )
+//        );
+
         gb1(GamepadKeys.Button.DPAD_RIGHT).toggleWhenPressed(
                 new ParallelCommandGroup(
                         new InstantCommand(pipeline::disableTracking),
@@ -136,5 +148,7 @@ public class MainOpMode extends BaseOpMode {
                 gamepadEx1::getLeftY,
                 gamepadEx1::getRightX
         ));
+
+        transmissionSys.setDefaultCommand(transmissionSys.manualControl(gamepadEx2::getLeftY));
     }
 }

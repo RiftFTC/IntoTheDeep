@@ -5,7 +5,7 @@
         <LynxModule name="Expansion Hub 9" port="9">
             <goBILDA5202SeriesMotor name="lil" port="0" />
             <goBILDA5202SeriesMotor name="lir" port="1" />
-            <goBILDA5202SeriesMotor name="hang" port="3" />
+            <goBILDA5202SeriesMotor name="hang" port="2" />
             <Servo name="iClaw" port="0" />
             <Servo name="iYaw" port="1" />
             <Servo name="iPitch" port="2" />

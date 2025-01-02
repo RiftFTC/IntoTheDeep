@@ -16,8 +16,8 @@ public class OuttakeV4BSys extends SubsystemBase {
     public static double ARM_HOME = 0.7;
     public static double ARM_AWAY= 0.2;
 
-
-    public static double ARM_HOME_SPECIMEN = 0.8;
+    public static double ARM_HOME_SPECIMEN = 0.57;
+    public static double PITCH_HOME_SPECIMEN = 0.3;
 
     SimpleServo pitch, arm;
     public OuttakeV4BSys(SimpleServo pitch, SimpleServo arm) {
@@ -49,7 +49,7 @@ public class OuttakeV4BSys extends SubsystemBase {
 
     public Command specimen() {
         return new InstantCommand(()->{
-            move(ARM_MID - 0.04, PITCH_MID);
+            move(ARM_HOME_SPECIMEN, PITCH_HOME_SPECIMEN);
         }, this);
     }
 

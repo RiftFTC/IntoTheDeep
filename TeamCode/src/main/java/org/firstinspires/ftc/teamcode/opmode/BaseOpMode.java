@@ -19,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.opencv.SampleTrackPipeline;
 import org.firstinspires.ftc.teamcode.subsystem.*;
+import org.firstinspires.ftc.teamcode.util.GamepadServer;
 import org.firstinspires.ftc.teamcode.util.GoBildaPinpointDriver;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -48,7 +49,6 @@ public class BaseOpMode extends CommandOpMode {
     protected OpenCvCamera camera;
     protected OuttakeV4BSys outtakeV4bSys;
     protected SampleTrackPipeline pipeline;
-    //TODO: Implement Outtake v4b subsystem
     protected TransmissionSys transmissionSys;
     public enum TEAM {
         RED,
@@ -58,13 +58,12 @@ public class BaseOpMode extends CommandOpMode {
     public void setTeam() {
         team = TEAM.BLUE;
     }
-    private static final ActivityManager activityManager = (ActivityManager) AppUtil.getDefContext().getSystemService(Context.ACTIVITY_SERVICE);
-    private ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
     List<LynxModule> allHubs;
-
+    GamepadServer gamepadServer;
 
     @Override
     public void initialize() {
+        gamepadServer = new GamepadServer(gamepad1);
         setTeam();
         gamepadEx1 = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
@@ -110,17 +109,17 @@ public class BaseOpMode extends CommandOpMode {
         outtakeClawSys = new OuttakeClawSys(oClaw);
         outtakeV4bSys = new OuttakeV4BSys(oPitch, oPos);
         timeSys = new TimeSys();
-        transmissionSys = new TransmissionSys(transmission, hang, timeSys);
+        transmissionSys = new TransmissionSys(transmission, hang, lir.encoder);
     }
 
     @SuppressLint("SdCardPath")
     public void setupMisc() {
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        //telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
         pipeline = new SampleTrackPipeline(team);
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName);
         camera.setPipeline(pipeline);
-        FtcDashboard.getInstance().startCameraStream(camera, 0);
+        //FtcDashboard.getInstance().startCameraStream(camera, 0);
         allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule module : allHubs) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
@@ -146,13 +145,19 @@ public class BaseOpMode extends CommandOpMode {
 //        tad("Available Memory", (float) memoryInfo.availMem / (float) memoryInfo.totalMem * 100.0F);
         tad("ANGLE", pipeline.getAngle());
         tad("FPS", camera.getFps());
-        tad("LIL Current", lil.motorEx.getCurrent(CurrentUnit.AMPS));
-        tad("LIR Current", lir.motorEx.getCurrent(CurrentUnit.AMPS));
+        tad("Hang Current", hang.motorEx.getCurrent(CurrentUnit.AMPS));
+        tad("HANG POWER", hang.get());
+        telemetry.addData("Encoder POS", lir.encoder.getPosition());
         double loop = System.nanoTime();
         telemetry.addData("hz ", 1000000000 / (loop - loopTime));
         loopTime = loop;
         telemetry.update();
     }
 
+    @Override
+    public void reset() {
+        super.reset();
+        gamepadServer.shutdown();
+    }
 
 }

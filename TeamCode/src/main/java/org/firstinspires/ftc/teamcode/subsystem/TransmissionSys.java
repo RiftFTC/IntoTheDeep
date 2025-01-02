@@ -12,25 +12,33 @@ public class TransmissionSys extends SubsystemBase {
     private final MotorEx hang;
     public static double TRANSMISSION_UP = 0.5;
     public static double TRANSMISSION_DOWN = 0;
-    private final TimeSys timeSys;
+    public Motor.Encoder encoder;
+    private boolean hanging = false;
 
-    public TransmissionSys(SimpleServo transmissionServo, MotorEx hangMotor, TimeSys timeSys) {
+    public TransmissionSys(SimpleServo transmissionServo, MotorEx hangMotor, Motor.Encoder encoder) {
         this.transmissionServo = transmissionServo;
         this.hang = hangMotor;
-        this.timeSys = timeSys;
+        this.encoder = encoder;
         transmissionServo.setPosition(TRANSMISSION_DOWN);
         hangMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     }
 
-    public Command transmissionUp() {
-        return new InstantCommand(() -> transmissionServo.setPosition(TRANSMISSION_UP));
+    public Command shiftUp() {
+        return new InstantCommand(() -> {transmissionServo.setPosition(TRANSMISSION_UP);hanging=true;});
     }
 
     public Command manualControl(DoubleSupplier manualControl) {
         return new RunCommand(() -> {
-            if (timeSys.getGameState() == TimeSys.GameState.HANG_PERIOD) {
+            int position = encoder.getPosition();
+            if (hanging && !(position < 250) && !(position > 1750)) {
                 hang.set(manualControl.getAsDouble());
+            } else if (position < 250 && manualControl.getAsDouble() > 0) {
+                hang.set(manualControl.getAsDouble());
+            } else if (position > 1750 && manualControl.getAsDouble() < 0) {
+                hang.set(manualControl.getAsDouble());
+            } else {
+                hang.set(0);
             }
-        });
+        }, this);
     }
 }

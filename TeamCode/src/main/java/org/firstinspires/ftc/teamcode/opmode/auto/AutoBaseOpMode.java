@@ -46,8 +46,6 @@ public class AutoBaseOpMode extends OpMode {
     protected OpenCvCamera camera;
     protected OuttakeV4BSys outtakeV4bSys;
     protected SampleTrackPipeline pipeline;
-    //TODO: Implement Outtake v4b subsystem
-    protected TransmissionSys transmissionSys;
     public enum TEAM {
         RED,
         BLUE
@@ -70,7 +68,7 @@ public class AutoBaseOpMode extends OpMode {
         configHw();
         initSys();
         setupMisc();
-        register(extendoSys, liftSys, intakeClawSys, outtakeClawSys, timeSys, intakeV4bSys, outtakeV4bSys, transmissionSys);
+        register(extendoSys, liftSys, intakeClawSys, outtakeClawSys, timeSys, intakeV4bSys, outtakeV4bSys);
     }
 
     public void initHw() {
@@ -107,7 +105,6 @@ public class AutoBaseOpMode extends OpMode {
         outtakeClawSys = new OuttakeClawSys(oClaw);
         outtakeV4bSys = new OuttakeV4BSys(oPitch, oPos);
         timeSys = new TimeSys();
-        transmissionSys = new TransmissionSys(transmission, hang, timeSys);
     }
 
     public void setupMisc() {
@@ -116,7 +113,6 @@ public class AutoBaseOpMode extends OpMode {
         pipeline = new SampleTrackPipeline(team);
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName);
         camera.setPipeline(pipeline);
-        FtcDashboard.getInstance().startCameraStream(camera, 0);
         allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule module : allHubs) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
@@ -138,7 +134,5 @@ public class AutoBaseOpMode extends OpMode {
     @Override
     public void loop() {
         CommandScheduler.getInstance().run();
-        activityManager.getMemoryInfo(memoryInfo);
-        tad("Available Memory", (float) memoryInfo.availMem / (float) memoryInfo.totalMem * 100.0F);
     }
 }

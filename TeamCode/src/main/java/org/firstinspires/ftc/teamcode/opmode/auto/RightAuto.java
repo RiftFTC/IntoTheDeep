@@ -14,37 +14,28 @@ import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
 import org.firstinspires.ftc.teamcode.util.ActionCommand;
 
 import static java.lang.Thread.sleep;
-import static org.firstinspires.ftc.teamcode.subsystem.IntakeV4bSys.POS_DOWN;
+import static org.firstinspires.ftc.teamcode.subsystem.IntakeV4bSys.*;
 
-@Autonomous(name="RightAuto", group="Autonomous")
+@Autonomous(name="Right Auto", group="Autonomous")
 public class RightAuto extends AutoBaseOpMode{
 
-    TrajectoryActionBuilder preloadDropOffTraj;
-
-    Action preloadDropOff;
-    Action pickupOffField1;
-    Action dropOffField1;
-    Action pickupOffField2;
-    Action dropOffField2;
-    Action dropOffField3;
-    Action pickUp1;
-    Action pickUp1F;
+    Action preLoad;
     Action dropOff1;
-    Action pickUp2;
-    Action pickUp2F;
     Action dropOff2;
-    Action pickUp3;
     Action dropOff3;
+    Action score1;
+    Action pickUp2;
+    Action score2;
+    Action pickUp3;
+    Action score3;
     Action park;
+
 
     @Override
     public void init() {
         super.init();
-        drive = new PinpointDrive(hardwareMap, new Pose2d(-16.6, 63, Math.toRadians(90)));
+        drive = new PinpointDrive(hardwareMap, new Pose2d(16.7, -62.2, Math.toRadians(270)));
         telemetry.addData("Initialization", true);
-        oPos.setPosition(0.55);
-        oPitch.setPosition(0.7);
-        iClaw.setPosition(0.63);
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
@@ -57,172 +48,191 @@ public class RightAuto extends AutoBaseOpMode{
             throw new RuntimeException(e);
         }
         oClaw.setPosition(0.0);
-
-        preloadDropOffTraj = drive.actionBuilder(new Pose2d(-16.6, 63, Math.toRadians(90)))
-                .strafeTo(new Vector2d(-5.7, 36.1));
-
-        preloadDropOff = preloadDropOffTraj.build();
-
-        pickupOffField1 = drive.actionBuilder(new Pose2d(-5.7, 36.1, Math.toRadians(90)))
-                .strafeToSplineHeading(new Vector2d(-27, 36.8 ), Math.toRadians(205)).build();
-
-        dropOffField1 = drive.actionBuilder(new Pose2d(-27, 36.8, Math.toRadians(205)))
-                .turnTo(Math.toRadians(120)).build();
-
-        pickupOffField2 = drive.actionBuilder(new Pose2d(-27, 36.8, Math.toRadians(120)))
-                .strafeToSplineHeading(new Vector2d(-35.1, 33.0), Math.toRadians(200)).build();
-
-        dropOffField2 = drive.actionBuilder(new Pose2d(-35.1, 33.0, Math.toRadians(200)))
-                .turnTo(Math.toRadians(120)).build();
-
-        dropOffField3 = drive.actionBuilder(new Pose2d(-35.1, 33.0, Math.toRadians(120)))
-                .strafeToSplineHeading(new Vector2d(-62.0, 11.8), Math.toRadians(270))
-                .strafeToSplineHeading(new Vector2d(-62, 44), Math.toRadians(270))
-                .strafeToSplineHeading(new Vector2d(-38.6, 59.7), Math.toRadians(270))
+        
+        preLoad = drive.actionBuilder(new Pose2d(16.7, -62.2, Math.toRadians(270)))
+                .strafeTo(new Vector2d(4, -34.9), drive.maxVelConstraint, drive.maxAccelConstraint)
+                .build();
+        
+        dropOff1 = drive.actionBuilder(new Pose2d(4, -34.9, Math.toRadians(270)))
+                .strafeTo(new Vector2d(25.4, -34.9))
+                .strafeTo(new Vector2d(46.4, -8.9), drive.maxVelConstraint, drive.defaultAccelConstraint)
+                .strafeTo(new Vector2d(46.2, -49.5), drive.maxVelConstraint, drive.maxAccelConstraint)
+                .build();
+        
+        dropOff2 = drive.actionBuilder(new Pose2d(46.2, -49.5, Math.toRadians(270)))
+                .strafeTo(new Vector2d(50.31, -13.74), drive.maxVelConstraint, drive.defaultAccelConstraint)
+                .strafeTo(new Vector2d(57.6, -14.5), drive.maxVelConstraint, drive.defaultAccelConstraint)
+                .strafeTo(new Vector2d(57.5, -49.5), drive.maxVelConstraint, drive.defaultAccelConstraint)
+                .build();
+        
+        dropOff3 = drive.actionBuilder(new Pose2d(57.5, -49.5, Math.toRadians(270)))
+                .strafeTo(new Vector2d(58.5, -14.5), drive.maxVelConstraint, drive.defaultAccelConstraint)
+                .strafeTo(new Vector2d(63.5, -14.6), drive.maxVelConstraint, drive.defaultAccelConstraint)
+                .strafeTo(new Vector2d(63.5, -62.5), drive.maxVelConstraint, drive.defaultAccelConstraint)
+                .build();
+        
+        score1 = drive.actionBuilder(new Pose2d(63.5, -62.5, Math.toRadians(270)))
+                .strafeTo(new Vector2d(6, -34.9), drive.maxVelConstraint, drive.defaultAccelConstraint)
+                .build();
+        
+        pickUp2 = drive.actionBuilder(new Pose2d(6, -34.9, Math.toRadians(270)))
+                .strafeTo(new Vector2d(34.7, -39.8), drive.maxVelConstraint, drive.defaultAccelConstraint)
+                .build();
+        
+        score2 = drive.actionBuilder(new Pose2d(34.7, -39.8, Math.toRadians(270)))
+                .strafeTo(new Vector2d(8, -34.9), drive.maxVelConstraint, drive.defaultAccelConstraint)
+                .build();
+        
+        pickUp3 = drive.actionBuilder(new Pose2d(8, -34.9, Math.toRadians(270)))
+                .strafeTo(new Vector2d(34.7, -39.8), drive.maxVelConstraint, drive.defaultAccelConstraint)
+                .build();
+        
+        score3 = drive.actionBuilder(new Pose2d(34.7, -39.8, Math.toRadians(270)))
+                .strafeTo(new Vector2d(10, -34.9), drive.maxVelConstraint, drive.defaultAccelConstraint)
+                .build();
+        
+        park = drive.actionBuilder(new Pose2d(10, -34.9, Math.toRadians(270)))
+                .strafeTo(new Vector2d(16.7, -62.2), drive.maxVelConstraint, drive.defaultAccelConstraint)
                 .build();
 
-        dropOff1 = drive.actionBuilder(new Pose2d(-38.6, 61, Math.toRadians(270)))
-                .strafeToSplineHeading(new Vector2d(-5.7, 36.1), Math.toRadians(90)).build();
-
-        pickUp2 = drive.actionBuilder(new Pose2d(-5.7, 36.1, Math.toRadians(90)))
-                .strafeToSplineHeading(new Vector2d(-38.6, 59.7), Math.toRadians(270)).build();
-
-        pickUp2F = drive.actionBuilder(new Pose2d(-38.6, 59.7, Math.toRadians(270)))
-                .strafeToSplineHeading(new Vector2d(-38.6, 61), Math.toRadians(270)).build();
-
-        park = drive.actionBuilder(new Pose2d(-5.7, 36.1, Math.toRadians(90)))
-                .splineToConstantHeading(new Vector2d(-27.1, 32.09), Math.toRadians(270)).build();
-
         schedule(
-                new SequentialCommandGroup(
-                        new ParallelCommandGroup(
-                                new ActionCommand(preloadDropOff),
-                                liftSys.goTo(LiftSys.LOW_BUCKET)
-                        ),
-                        outtakeV4bSys.setArm(0.23),
-                        outtakeV4bSys.setPitch(0.8),
-                        new WaitCommand(400),
-                        liftSys.goTo(LiftSys.LOW_BUCKET - 320),
-                        outtakeClawSys.superRelease(),
-                        new WaitCommand(200),
-                        outtakeV4bSys.away(),
-                        new ParallelCommandGroup(
-                                new ActionCommand(pickupOffField1),
-                                liftSys.goTo(LiftSys.NONE)
-                        ),
-                        new WaitCommand(300),
-                        new SequentialCommandGroup(
-                                extendoSys.goTo(0.43),
-                                intakeV4bSys.intake(),
-                                intakeClawSys.rotateYaw(0),
-                                intakeClawSys.release(),
-                                new WaitCommand(400),
-                                intakeV4bSys.intake(),
-                                new WaitCommand(400),
-                                intakeV4bSys.goToPos(POS_DOWN),
-                                new WaitCommand(100),
-                                intakeClawSys.pinch(),
-                                new WaitCommand(100),
-                                intakeClawSys.dropoff(),
-                                intakeV4bSys.dropOff(),
-                                extendoSys.goTo(ExtendoSys.EXTENDO_HOME)
-                        ),
-                        new WaitCommand(300),
-                        new ActionCommand(dropOffField1),
-                        extendoSys.goTo(0.43),
-                        intakeV4bSys.intake(),
-                        new WaitCommand(300),
-                        intakeClawSys.release(),
-                        new WaitCommand(300),
-                        intakeClawSys.dropoff(),
-                        intakeV4bSys.dropOff(),
-                        extendoSys.goTo(ExtendoSys.EXTENDO_HOME),
-//                        new ActionCommand(pickupOffField2),
-//                        extendoSys.goTo(0.43),
-//                        intakeV4bSys.intake(),
-//                        intakeClawSys.rotateYaw(0),
-//                        intakeClawSys.release(),
-//                        new WaitCommand(300),
-//                        intakeV4bSys.goToPos(POS_DOWN),
-//                        new WaitCommand(100),
-//                        intakeClawSys.pinch(),
-//                        new WaitCommand(200),
-//                        intakeClawSys.dropoff(),
-//                        intakeV4bSys.dropOff(),
-//                        extendoSys.goTo(ExtendoSys.EXTENDO_HOME),
-//                        new WaitCommand(400),
-//                        new ActionCommand(dropOffField2),
-//                        extendoSys.goTo(0.46),
-//                        intakeV4bSys.intake(),
-//                        new WaitCommand(400),
-//                        intakeClawSys.release(),
-//                        new WaitCommand(300),
-//                        intakeClawSys.dropoff(),
-//                        intakeV4bSys.dropOff(),
-//                        extendoSys.goTo(ExtendoSys.EXTENDO_HOME),
-//                        new WaitCommand(300),
-                        new ActionCommand(dropOffField3),
-                        new WaitCommand(200),
-                        outtakeClawSys.grab(),
-                        new WaitCommand(300),
-                        new ParallelCommandGroup(new ActionCommand(pickUp2F), liftSys.goTo(LiftSys.NONE + 50)),
-                        new WaitCommand(200),
-                        new ParallelCommandGroup(
-                                new ActionCommand(dropOff1),
-                                liftSys.goTo(LiftSys.LOW_BUCKET),
-                                outtakeV4bSys.home()
-                        ),
-                        outtakeV4bSys.setPitch(0.8),
-                        outtakeV4bSys.setArm(0.23),
-                        new WaitCommand(500),
-                        liftSys.goTo(LiftSys.LOW_BUCKET - 320),
-                        outtakeClawSys.superRelease(),
-                        new WaitCommand(200),
-                        outtakeV4bSys.away(),
-                        new ParallelCommandGroup(
-                                new ActionCommand(pickUp2),
-                                liftSys.goTo(LiftSys.NONE)
-                        ),
-                        new WaitCommand(200),
-                        outtakeClawSys.grab(),
-                        new WaitCommand(300),
-                        new ParallelCommandGroup(
-                                new ActionCommand(pickUp2F),
-                                liftSys.goTo(LiftSys.NONE + 50)
-                        ),
-                        new ParallelCommandGroup(
-                                new ActionCommand(dropOff1),
-                                liftSys.goTo(LiftSys.LOW_BUCKET),
-                                outtakeV4bSys.home()
-                        ),
-                        outtakeV4bSys.setPitch(0.8),
-                        outtakeV4bSys.setArm(0.23),
-                        new WaitCommand(400),
-                        liftSys.goTo(LiftSys.LOW_BUCKET - 320),
-                        outtakeClawSys.superRelease(),
-                        new WaitCommand(200),
-                        outtakeV4bSys.away(),
-                        new ParallelCommandGroup(
-                                new ActionCommand(pickUp2),
-                                liftSys.goTo(LiftSys.NONE)
-                        ),
-                        new WaitCommand(200),
-                        outtakeClawSys.grab(),
-                        new WaitCommand(300),
-                        new ParallelCommandGroup(
-                                new ActionCommand(dropOff1),
-                                liftSys.goTo(LiftSys.LOW_BUCKET),
-                                outtakeV4bSys.home()
-                        ),
-                        outtakeV4bSys.setPitch(0.8),
-                        outtakeV4bSys.setArm(0.23),
-                        new WaitCommand(400),
-                        liftSys.goTo(LiftSys.LOW_BUCKET - 320),
-                        outtakeClawSys.superRelease(),
-                        new WaitCommand(200),
-                        outtakeV4bSys.away(),
-                        new ActionCommand(park)
-                )
+            new SequentialCommandGroup(
+                    // SCORE PRELOAD
+                    new ParallelCommandGroup(
+                            new ActionCommand(preLoad),
+                            liftSys.goTo(LiftSys.HIGH_RUNG),
+                            outtakeV4bSys.away()
+                    ),
+                    //outtake v4b sm shit
+                    liftSys.goTo(LiftSys.HIGH_RUNG - 200),
+                    outtakeClawSys.release(),
+                    new WaitCommand(200),
+                    //DROP OFF 1
+                    new ParallelCommandGroup(
+                            new ActionCommand(dropOff1),
+                            liftSys.goTo(LiftSys.NONE),
+                            outtakeV4bSys.mid()
+                    ),
+                    //DROP OFF 2
+                    new ActionCommand(dropOff2),
+                    //DROP OFF 3
+                    new ParallelCommandGroup(
+                            new ActionCommand(dropOff3),
+                            intakeClawSys.release(),
+                            intakeV4bSys.specimenIntake(),
+                            outtakeClawSys.release()
+                    ),
+                    //SCORE 1
+                    new WaitCommand(100),
+                    intakeClawSys.pinch(),
+                    new WaitCommand(150),
+                    intakeV4bSys.goToRoll(ROLL_IN_SPECIMEN),
+                    new WaitCommand(150),
+                    new ParallelCommandGroup(
+                            extendoSys.goTo(ExtendoSys.EXTENDO_HOME),
+                            intakeV4bSys.goToPos(POS_SPECIMEN_IN),
+                            outtakeV4bSys.specimen()
+                    ),
+                    new ParallelCommandGroup(
+                            new ActionCommand(score1),
+                            new SequentialCommandGroup(
+                                    outtakeClawSys.grab(),
+                                    intakeClawSys.release(),
+                                    new WaitCommand(200),
+                                    new ParallelCommandGroup(
+                                            liftSys.goTo(LiftSys.HIGH_RUNG),
+                                            outtakeV4bSys.away()
+                                    )
+                            )
+                    ),
+                    //outtake v4b some shit
+                    liftSys.goTo(LiftSys.HIGH_RUNG-200),
+                    new WaitCommand(200),
+                    outtakeClawSys.release(),
+                    new WaitCommand(100),
+                    //PICKUP 2
+                    new ParallelCommandGroup(
+                            new ActionCommand(pickUp2),
+                            liftSys.goTo(LiftSys.NONE),
+                            new SequentialCommandGroup(
+                                    new WaitCommand(500),
+                                    outtakeV4bSys.home()
+                            )
+                    ),
+                    //SCORE 2
+                    extendoSys.goTo(ExtendoSys.EXTENDO_MIDDLE),
+                    intakeV4bSys.specimenIntake(),
+                    intakeClawSys.release(),
+                    outtakeClawSys.release(),
+                    new WaitCommand(300),
+                    intakeClawSys.pinch(),
+                    new WaitCommand(150),
+                    intakeV4bSys.goToRoll(ROLL_IN_SPECIMEN),
+                    extendoSys.goTo(ExtendoSys.EXTENDO_HOME),
+                    intakeV4bSys.goToPos(POS_SPECIMEN_IN),
+                    outtakeV4bSys.specimen(),
+                    new ParallelCommandGroup(
+                            new ActionCommand(score2),
+                            new SequentialCommandGroup(
+                                    new WaitCommand(300),
+                                    outtakeClawSys.grab(),
+                                    intakeClawSys.release(),
+                                    new WaitCommand(200),
+                                    new ParallelCommandGroup(
+                                            liftSys.goTo(LiftSys.HIGH_RUNG),
+                                            outtakeV4bSys.away()
+                                    )
+                            )
+                    ),
+                    //score sm shit
+                    liftSys.goTo(LiftSys.HIGH_RUNG - 200),
+                    outtakeClawSys.release(),
+                    new WaitCommand(50),
+                    //PICKUP 3
+                    new ParallelCommandGroup(
+                            new ActionCommand(pickUp3),
+                            liftSys.goTo(LiftSys.NONE),
+                            new SequentialCommandGroup(
+                                    new WaitCommand(500),
+                                    outtakeV4bSys.home()
+                            )
+                    ),
+                    //SCORE 3
+                    extendoSys.goTo(ExtendoSys.EXTENDO_MIDDLE),
+                    intakeV4bSys.specimenIntake(),
+                    intakeClawSys.release(),
+                    outtakeClawSys.release(),
+                    new WaitCommand(300),
+                    intakeClawSys.pinch(),
+                    new WaitCommand(150),
+                    intakeV4bSys.goToRoll(ROLL_IN_SPECIMEN),
+                    extendoSys.goTo(ExtendoSys.EXTENDO_HOME),
+                    intakeV4bSys.goToPos(POS_SPECIMEN_IN),
+                    outtakeV4bSys.specimen(),
+                    new ParallelCommandGroup(
+                            new ActionCommand(score3),
+                            new SequentialCommandGroup(
+                                    new WaitCommand(300),
+                                    outtakeClawSys.grab(),
+                                    intakeClawSys.release(),
+                                    new WaitCommand(200),
+                                    new ParallelCommandGroup(
+                                            liftSys.goTo(LiftSys.HIGH_RUNG),
+                                            outtakeV4bSys.away()
+                                    )
+                            )
+                    ),
+                    //score smshit
+                    liftSys.goTo(LiftSys.HIGH_RUNG - 200),
+                    outtakeClawSys.release(),
+                    new WaitCommand(50),
+                    //PARK
+                    new ParallelCommandGroup(
+                            new ActionCommand(park),
+                            liftSys.goTo(LiftSys.NONE),
+                            outtakeV4bSys.home()
+                    )
+            )
         );
     }
 

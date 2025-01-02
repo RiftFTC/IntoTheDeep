@@ -3,10 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystem;
 import android.text.method.Touch;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import com.arcrobotics.ftclib.command.*;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ProfiledPIDController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -44,6 +41,7 @@ public class LiftSys extends SubsystemBase {
     public static double slowFactor = 1.5;
     private final DoubleSupplier doubleSupplier;
     private int currentTarget = 0;
+    private boolean hang = false;
 
     public LiftSys(MotorEx top, MotorEx bottem, DoubleSupplier doubleSupplier, TouchSensor touch) {
         this.top = top;
@@ -51,13 +49,58 @@ public class LiftSys extends SubsystemBase {
         this.touch = touch;
         encoder = bottem.encoder;
         this.doubleSupplier = doubleSupplier;
-        top.motorEx.setCurrentAlert(7, CurrentUnit.AMPS);
-        bottem.motorEx.setCurrentAlert(7, CurrentUnit.AMPS);
+        top.motorEx.setCurrentAlert(10, CurrentUnit.AMPS);
+        bottem.motorEx.setCurrentAlert(10, CurrentUnit.AMPS);
     }
 
     public Command goTo(int target) {return setTarget(target).andThen(new WaitUntilCommand(this::atTarget));}
 
     public Command setTarget(int target) {return new InstantCommand(() -> {currentTarget = target;controller.setGoal(target);});}
+
+    public Command vibrate(int durationMillis, double power) {
+        return new CommandBase() {
+            private long startTime;
+            private boolean isFinished;
+
+            @Override
+            public void initialize() {
+                startTime = System.currentTimeMillis();
+                isFinished = false;
+
+            }
+
+            @Override
+            public void execute() {
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                if (elapsedTime >= durationMillis) {
+                    top.set(0);
+                    bottem.set(0);
+                    hang = true;
+                    isFinished = true;
+                } else {
+                    // Alternate direction every 50ms
+                    if ((elapsedTime / 50) % 2 == 0) {
+                        top.set(power);
+                        bottem.set(power);
+                    } else {
+                        top.set(-power);
+                        bottem.set(-power);
+                    }
+                }
+            }
+
+            @Override
+            public boolean isFinished() {
+                return isFinished;
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                top.set(0);
+                bottem.set(0);
+            }
+        };
+    }
 
     public boolean atTarget() {return Math.abs(encoder.getPosition() - currentTarget) < threshold;}
 
@@ -69,7 +112,8 @@ public class LiftSys extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (!(top.motorEx.isOverCurrent() && bottem.motorEx.isOverCurrent())) {
+        //TODO: Fix this bulk reads implementation
+        if (!(top.motorEx.isOverCurrent() && bottem.motorEx.isOverCurrent()) && !hang) {
             if (touch.isPressed()) {
                 encoder.reset();
             }
@@ -83,6 +127,9 @@ public class LiftSys extends SubsystemBase {
                 top.set(output);
                 bottem.set(output);
             }
+        } else {
+            top.set(0);
+            bottem.set(0);
         }
     }
 }
