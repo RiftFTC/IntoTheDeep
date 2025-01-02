@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.riftftc'
+version = 'unspecified'
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://maven.brott.dev/' }
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'com.acmerobotics.roadrunner:MeepMeep:0.1.6'
+}
+
+test {
+    useJUnitPlatform()
+}
