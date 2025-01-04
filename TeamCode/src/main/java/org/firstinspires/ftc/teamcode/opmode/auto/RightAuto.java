@@ -119,9 +119,9 @@ public class RightAuto extends AutoBaseOpMode{
                     new ParallelCommandGroup(
                             new ActionCommand(dropOff3),
                             intakeClawSys.release(),
-                            intakeV4bSys.specimenIntake(),
                             outtakeClawSys.release()
                     ),
+                    intakeV4bSys.specimenIntake(),
                     //SCORE 1
                     new WaitCommand(100),
                     intakeClawSys.pinch(),
@@ -156,11 +156,11 @@ public class RightAuto extends AutoBaseOpMode{
                             liftSys.goTo(LiftSys.NONE),
                             new SequentialCommandGroup(
                                     new WaitCommand(500),
-                                    outtakeV4bSys.home()
+                                    outtakeV4bSys.mid()
                             )
                     ),
                     //SCORE 2
-                    extendoSys.goTo(ExtendoSys.EXTENDO_MIDDLE),
+                    extendoSys.goTo(ExtendoSys.EXTENDO_MAX),
                     intakeV4bSys.specimenIntake(),
                     intakeClawSys.release(),
                     outtakeClawSys.release(),
@@ -194,11 +194,11 @@ public class RightAuto extends AutoBaseOpMode{
                             liftSys.goTo(LiftSys.NONE),
                             new SequentialCommandGroup(
                                     new WaitCommand(500),
-                                    outtakeV4bSys.home()
+                                    outtakeV4bSys.mid()
                             )
                     ),
                     //SCORE 3
-                    extendoSys.goTo(ExtendoSys.EXTENDO_MIDDLE),
+                    extendoSys.goTo(ExtendoSys.EXTENDO_MAX),
                     intakeV4bSys.specimenIntake(),
                     intakeClawSys.release(),
                     outtakeClawSys.release(),
@@ -230,7 +230,7 @@ public class RightAuto extends AutoBaseOpMode{
                     new ParallelCommandGroup(
                             new ActionCommand(park),
                             liftSys.goTo(LiftSys.NONE),
-                            outtakeV4bSys.home()
+                            outtakeV4bSys.mid()
                     )
             )
         );
