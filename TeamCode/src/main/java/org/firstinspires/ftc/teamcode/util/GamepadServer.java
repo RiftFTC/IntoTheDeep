@@ -104,7 +104,6 @@ public class GamepadServer {
                 }
                 Log.i("GamepadServer", "Server shut down successfully.");
             } catch (IOException e) {
-                e.printStackTrace();
                 Log.e("GamepadServer", "Error during server shutdown: " + e.getMessage());
             }
         }

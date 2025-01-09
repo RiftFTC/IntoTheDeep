@@ -106,12 +106,12 @@ public class MecanumDrive {
 
     public final VelConstraint maxVelConstraint =
             new MinVelConstraint(Arrays.asList(
-                    kinematics.new WheelVelConstraint(100),
+                    kinematics.new WheelVelConstraint(80),
                     new AngularVelConstraint(PARAMS.maxAngVel)
             ));
 
     public final AccelConstraint maxAccelConstraint =
-            new ProfileAccelConstraint(-70, 100);
+            new ProfileAccelConstraint(-60, 80);
 
 
     public final DcMotorEx leftFront, leftBack, rightBack, rightFront;
@@ -129,6 +129,9 @@ public class MecanumDrive {
     private final DownsampledWriter targetPoseWriter = new DownsampledWriter("TARGET_POSE", 50_000_000);
     private final DownsampledWriter driveCommandWriter = new DownsampledWriter("DRIVE_COMMAND", 50_000_000);
     private final DownsampledWriter mecanumCommandWriter = new DownsampledWriter("MECANUM_COMMAND", 50_000_000);
+
+    private int errorTolerance = 1;
+    private int timeTolerance = 4;
 
     public class DriveLocalizer implements Localizer {
         public final Encoder leftFront, leftBack, rightBack, rightFront;
@@ -303,7 +306,7 @@ public class MecanumDrive {
             PoseVelocity2d robotVelRobot = updatePoseEstimate();
             Pose2d error = txWorldTarget.value().minusExp(pose);
 
-            if ((t >= timeTrajectory.duration && error.position.norm() < 1) || t >= timeTrajectory.duration + 4) {
+            if ((t >= timeTrajectory.duration && error.position.norm() < errorTolerance) || t >= timeTrajectory.duration + timeTolerance) {
                 leftFront.setPower(0);
                 leftBack.setPower(0);
                 rightBack.setPower(0);
@@ -497,5 +500,10 @@ public class MecanumDrive {
                 defaultTurnConstraints,
                 defaultVelConstraint, defaultAccelConstraint
         );
+    }
+
+    public void setTolerance(int errorTolerance, int timeTolerance) {
+        this.errorTolerance = errorTolerance;
+        this.timeTolerance = timeTolerance;
     }
 }

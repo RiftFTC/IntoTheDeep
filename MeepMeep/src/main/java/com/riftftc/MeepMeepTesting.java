@@ -23,9 +23,9 @@ public class MeepMeepTesting {
         public double kA = 0.0001;
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 100;
-        public double minProfileAccel = -70;
-        public double maxProfileAccel = 100;
+        public double maxWheelVel = 50;
+        public double minProfileAccel = -30;
+        public double maxProfileAccel = 50;
 
         // turn profile parameters (in radians)
         public double maxAngVel = Math.PI; // shared with path
@@ -66,30 +66,44 @@ public class MeepMeepTesting {
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(16.7, -62.2, Math.toRadians(270)))
                 //PRELOAD
                 .strafeTo(new Vector2d(4, -34.9))
-                // DROP OFF 1
-                .strafeTo(new Vector2d(25.4, -34.9))
-                .strafeTo(new Vector2d(46.4, -8.9), defaultVelConstraint, defaultAccelConstraint)
-                .strafeTo(new Vector2d(46.2, -49.5), defaultVelConstraint, defaultAccelConstraint)
-                // DROP OFF 2
-                .strafeTo(new Vector2d(50.31, -13.74), defaultVelConstraint, defaultAccelConstraint)
-                .strafeTo(new Vector2d(57.6, -14.5), defaultVelConstraint, defaultAccelConstraint)
-                .strafeTo(new Vector2d(57.5, -49.5), defaultVelConstraint, defaultAccelConstraint)
-                // DROP OFF 3
-                .strafeTo(new Vector2d(58.5, -14.5), defaultVelConstraint, defaultAccelConstraint)
-                .strafeTo(new Vector2d(63.5, -14.6), defaultVelConstraint, defaultAccelConstraint)
-                .strafeTo(new Vector2d(63.5, -62.5), defaultVelConstraint, defaultAccelConstraint)
+                                .waitSeconds(1)
+                //DROP OFF ALL 3
+                .strafeToLinearHeading(new Vector2d(11, -36), Math.toRadians(270),defaultVelConstraint, defaultAccelConstraint)
+                .splineToConstantHeading(new Vector2d(46.4, -14), Math.toRadians(270), defaultVelConstraint, defaultAccelConstraint)
+                .splineToConstantHeading(new Vector2d(46.2, -49.5 ),Math.toRadians(270), defaultVelConstraint, defaultAccelConstraint)
+                .splineToConstantHeading(new Vector2d(50.31, -13.74), Math.toRadians(270), defaultVelConstraint, defaultAccelConstraint)
+                .splineToConstantHeading(new Vector2d(57.6, -13.74), Math.toRadians(270), defaultVelConstraint, defaultAccelConstraint)
+                .splineToConstantHeading(new Vector2d(57.6, -49.5), Math.toRadians(270), defaultVelConstraint, defaultAccelConstraint)
+                .splineToConstantHeading(new Vector2d(58.5, -13.74), Math.toRadians(270), defaultVelConstraint, defaultAccelConstraint)
+                .splineToConstantHeading(new Vector2d(63.5, -13.74), Math.toRadians(270), defaultVelConstraint, defaultAccelConstraint)
+                .splineToConstantHeading(new Vector2d(63.5, -52), Math.toRadians(270), defaultVelConstraint, defaultAccelConstraint)
                 // SCORE 1
-                .strafeTo(new Vector2d(6, -34.9), defaultVelConstraint, defaultAccelConstraint)
-                // PICKUP 2
-                .strafeTo(new Vector2d(34.7, -39.8), defaultVelConstraint, defaultAccelConstraint)
-                // SCORE 2
-                .strafeTo(new Vector2d(8, -34.9), defaultVelConstraint, defaultAccelConstraint)
-                // PICKUP 3
-                .strafeTo(new Vector2d(34.7, -39.8), defaultVelConstraint, defaultAccelConstraint)
-                // SCORE 3
-                .strafeTo(new Vector2d(10, -34.9), defaultVelConstraint, defaultAccelConstraint)
+                        .strafeToLinearHeading(new Vector2d(34.7, -60), Math.toRadians(90), defaultVelConstraint, defaultAccelConstraint)
+                        .waitSeconds(0.5)
+                .strafeToLinearHeading(new Vector2d(6, -34.9), Math.toRadians(270),defaultVelConstraint, defaultAccelConstraint)
+                .waitSeconds(1)
+//                // PICKUP 2
+//                .strafeTo(new Vector2d(34.7, -39.8), defaultVelConstraint, defaultAccelConstraint)
+//                // SCORE 2
+//                .strafeTo(new Vector2d(8, -34.9), defaultVelConstraint, defaultAccelConstraint)
+//                // PICKUP 3
+//                .strafeTo(new Vector2d(34.7, -39.8), defaultVelConstraint, defaultAccelConstraint)
+//                // SCORE 3
+//                .strafeTo(new Vector2d(10, -34.9), defaultVelConstraint, defaultAccelConstraint)
+                .strafeToLinearHeading(new Vector2d(34.7, -60), Math.toRadians(90),defaultVelConstraint, defaultAccelConstraint)
+                                .waitSeconds(0.5)
+                                .strafeToLinearHeading(new Vector2d(8, -34.9), Math.toRadians(270),defaultVelConstraint, defaultAccelConstraint)
+                                .waitSeconds(1)
+                                .strafeToLinearHeading(new Vector2d(34.7, -60), Math.toRadians(90),defaultVelConstraint, defaultAccelConstraint)
+                                .waitSeconds(0.5)
+                                .strafeToLinearHeading(new Vector2d(10, -34.9), Math.toRadians(270),defaultVelConstraint, defaultAccelConstraint)
+                                .waitSeconds(1)
+
+
+
+
                 // PARK
-                .strafeTo(new Vector2d(35.3, -55.9), defaultVelConstraint, defaultAccelConstraint)
+                .strafeToLinearHeading(new Vector2d(23.3, -46.9), Math.toRadians(315),defaultVelConstraint, defaultAccelConstraint)
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
