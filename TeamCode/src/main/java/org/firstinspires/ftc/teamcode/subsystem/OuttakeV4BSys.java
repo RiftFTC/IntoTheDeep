@@ -16,8 +16,8 @@ public class OuttakeV4BSys extends SubsystemBase {
     public static double ARM_HOME = 0.7;
     public static double ARM_AWAY= 0.2;
 
-    public static double ARM_HOME_SPECIMEN = 0.57;
-    public static double PITCH_HOME_SPECIMEN = 0.3;
+    public static double ARM_HOME_SPECIMEN = 0.15;
+    public static double PITCH_HOME_SPECIMEN = 1;
 
     SimpleServo pitch, arm;
     public OuttakeV4BSys(SimpleServo pitch, SimpleServo arm) {

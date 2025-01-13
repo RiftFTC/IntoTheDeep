@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmode.auto;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -15,22 +14,19 @@ import org.firstinspires.ftc.teamcode.subsystem.IntakeV4bSys;
 import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
 import org.firstinspires.ftc.teamcode.util.ActionCommand;
 
-import static org.firstinspires.ftc.teamcode.subsystem.IntakeV4bSys.POS_SPECIMEN_IN;
-import static org.firstinspires.ftc.teamcode.subsystem.IntakeV4bSys.ROLL_IN_SPECIMEN;
-@Config
-@TeleOp(name="Right ALT Auto")
-public class RightAltAuto extends AutoBaseOpMode{
+@TeleOp(name="Right SPEED Auto")
+public class RightSpeedAuto extends AutoBaseOpMode{
     Action preLoad;
-    Action dropOff;
+    Action dropOffLocation;
+    Action dropOff2;
+    Action dropOff3;
+    Action pickup1;
     Action score1;
     Action pickUp2;
     Action score2;
     Action pickUp3;
     Action score3;
     Action park;
-
-    public static double pickupN = -58;
-    public static double dropOffN = -36;
 
     @Override
     public void init() {
@@ -41,51 +37,46 @@ public class RightAltAuto extends AutoBaseOpMode{
         oClaw.setPosition(0.3);
 
         preLoad = drive.actionBuilder(new Pose2d(16.7, -62.2, Math.toRadians(270)))
-                .strafeTo(new Vector2d(4, dropOffN), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .strafeTo(new Vector2d(4, -34.9), drive.defaultVelConstraint, drive.defaultAccelConstraint)
                 .build();
 
-        dropOff = drive.actionBuilder(new Pose2d(4, dropOffN, Math.toRadians(270)))
-                .strafeTo(new Vector2d(20, -36))
-                .splineToConstantHeading(new Vector2d(46.4, -8.9), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
-                .splineToConstantHeading(new Vector2d(46.2, -49.5 ),Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
-                .splineToConstantHeading(new Vector2d(50.31, -13.74), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
-                .splineToConstantHeading(new Vector2d(58, -13.74), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
-                .splineToConstantHeading(new Vector2d(58, -49.5), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
-                .splineToConstantHeading(new Vector2d(58.5, -13.74), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
-                .splineToConstantHeading(new Vector2d(60, -13.74), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
-                .splineToConstantHeading(new Vector2d(60, -49.5), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
-                .strafeToLinearHeading(new Vector2d(34.7, -58), Math.toRadians(90), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+        dropOffLocation = drive.actionBuilder(new Pose2d(4, -34.9, Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(58.7, -50), Math.toRadians(115))
                 .build();
 
-        score1 = drive.actionBuilder(new Pose2d(34.7, pickupN, Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(6, dropOffN), Math.toRadians(270),drive.defaultVelConstraint, drive.defaultAccelConstraint)
+        dropOff2 = drive.actionBuilder(new Pose2d(58.7,-50, Math.toRadians(115)))
+                .strafeToLinearHeading(new Vector2d(58.7, -50), Math.toRadians(90))
                 .build();
 
-        pickUp2 = drive.actionBuilder(new Pose2d(6, dropOffN, Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(34.7, pickupN), Math.toRadians(90), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+        dropOff3 = drive.actionBuilder(new Pose2d(58.7,-50,Math.toRadians(70)))
+                .strafeToLinearHeading(new Vector2d(58.7, -50),Math.toRadians(70))
                 .build();
 
-        score2 = drive.actionBuilder(new Pose2d(34.7, pickupN, Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(8, dropOffN), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+        pickup1 = drive.actionBuilder(new Pose2d(58.7,-50,Math.toRadians(70)))
+                .strafeToLinearHeading(new Vector2d(34.7, -60), Math.toRadians(90))
                 .build();
 
-        pickUp3 = drive.actionBuilder(new Pose2d(8, dropOffN, Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(34.7, pickupN), Math.toRadians(90), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+        score1 = drive.actionBuilder(new Pose2d(34.7, -60, Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(6, -34.9), Math.toRadians(270),drive.defaultVelConstraint, drive.defaultAccelConstraint)
                 .build();
 
-        score3 = drive.actionBuilder(new Pose2d(34.7, pickupN, Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(10, dropOffN), Math.toRadians(270), drive.maxVelConstraint, drive.maxAccelConstraint)
+        pickUp2 = drive.actionBuilder(new Pose2d(6, -34.9, Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(34.7, -60), Math.toRadians(90), drive.defaultVelConstraint, drive.defaultAccelConstraint)
                 .build();
 
-        park = drive.actionBuilder(new Pose2d(10, dropOffN, Math.toRadians(270)))
+        score2 = drive.actionBuilder(new Pose2d(34.7, -60, Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(8, -34.9), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .build();
+
+        pickUp3 = drive.actionBuilder(new Pose2d(8, -34.9, Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(34.7, -60), Math.toRadians(90), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .build();
+
+        score3 = drive.actionBuilder(new Pose2d(34.7, -60, Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(10, -34.9), Math.toRadians(270), drive.maxVelConstraint, drive.maxAccelConstraint)
+                .build();
+
+        park = drive.actionBuilder(new Pose2d(10, -34.9, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(24, -45), Math.toRadians(315), drive.defaultVelConstraint, drive.maxAccelConstraint)
                 .build();
 
@@ -97,51 +88,68 @@ public class RightAltAuto extends AutoBaseOpMode{
                                 liftSys.goTo(LiftSys.HIGH_RUNG)
                         ),
                         outtakeV4bSys.away(),
-                        new WaitCommand(250),
                         //outtake v4b sm shit
-                        liftSys.goTo(LiftSys.HIGH_RUNG - 400),
-                        new WaitCommand(200),
+                        liftSys.goTo(LiftSys.HIGH_RUNG - 200),
                         outtakeClawSys.release(),
-                        new WaitCommand(150),
-                        outtakeV4bSys.mid(),
+                        new WaitCommand(200),
                         //DROP OFF 1
-                        new InstantCommand(()->drive.setTolerance(1, 3)),
                         new ParallelCommandGroup(
-                                new ActionCommand(dropOff),
                                 intakeClawSys.release(),
                                 outtakeClawSys.release(),
-                                new SequentialCommandGroup(
-                                        liftSys.goTo(LiftSys.NONE),
-                                        outtakeV4bSys.mid()
-                                )
+                                new ActionCommand(dropOffLocation)
                         ),
+                        new WaitCommand(150),
+                        new ActionCommand(dropOff2),
+                        new ActionCommand(dropOff3),
+                        new SequentialCommandGroup(
+                                new ParallelCommandGroup(
+                                        extendoSys.goTo(ExtendoSys.EXTENDO_MAX),
+                                        new SequentialCommandGroup(
+                                                intakeV4bSys.goToPos(IntakeV4bSys.POS_DOWN),
+                                                intakeV4bSys.goToRoll(IntakeV4bSys.ROLL_OUT)
+                                        )
+                                ),
+                                new WaitCommand(250),
+                                intakeClawSys.pinch(),
+                                new WaitCommand(100),
+                                new ParallelCommandGroup(
+                                        extendoSys.goTo(ExtendoSys.EXTENDO_HOME),
+                                        intakeV4bSys.dropOff()
+                                ),
+                                new WaitCommand(300),
+                                outtakeV4bSys.home(),
+                                new WaitCommand(100),
+                                outtakeClawSys.grab(),
+                                new WaitCommand(150),
+                                outtakeV4bSys.away(),
+                                new WaitCommand(50),
+                                outtakeClawSys.release()
+                        ),
+                        new ActionCommand(pickup1),
                         //SCORE 1
-                        outtakeV4bSys.specimen(),
+                        outtakeV4bSys.away(),
                         new WaitCommand(150),
                         outtakeClawSys.grab(),
                         new WaitCommand(150),
                         outtakeV4bSys.mid(),
                         new ParallelCommandGroup(
                                 new ActionCommand(score1),
-                                new SequentialCommandGroup(
-                                        liftSys.goTo(LiftSys.HIGH_RUNG),
-                                        outtakeV4bSys.away()
-                                )
+                                liftSys.goTo(LiftSys.HIGH_RUNG)
                         ),
+                        outtakeV4bSys.away(),
                         //outtake v4b some shit
-                        liftSys.goTo(LiftSys.HIGH_RUNG-400),
+                        liftSys.goTo(LiftSys.HIGH_RUNG-200),
                         new WaitCommand(200),
                         outtakeClawSys.release(),
                         new WaitCommand(100),
                         //PICKUP 2
                         new ParallelCommandGroup(
                                 new ActionCommand(pickUp2),
-                                new SequentialCommandGroup(
-                                        liftSys.goTo(LiftSys.NONE),
-                                        outtakeV4bSys.specimen()
-                                )
-                        ),
+                                liftSys.goTo(LiftSys.NONE),
+                                outtakeV4bSys.mid()
 
+                        ),
+                        outtakeV4bSys.away(),
                         new WaitCommand(200),
                         outtakeClawSys.grab(),
                         new WaitCommand(200),
@@ -152,18 +160,16 @@ public class RightAltAuto extends AutoBaseOpMode{
                         ),
                         outtakeV4bSys.away(),
                         //score sm shit
-                        liftSys.goTo(LiftSys.HIGH_RUNG - 400),
+                        liftSys.goTo(LiftSys.HIGH_RUNG - 200),
                         outtakeClawSys.release(),
                         new WaitCommand(150),
                         //PICKUP 3
                         new ParallelCommandGroup(
                                 new ActionCommand(pickUp3),
-                                new SequentialCommandGroup(
-                                        liftSys.goTo(LiftSys.NONE),
-                                        outtakeV4bSys.specimen()
-                                )
-
+                                liftSys.goTo(LiftSys.NONE),
+                                outtakeV4bSys.mid()
                         ),
+                        outtakeV4bSys.away(),
                         new WaitCommand(200),
                         outtakeClawSys.grab(),
                         new WaitCommand(200),
@@ -174,7 +180,7 @@ public class RightAltAuto extends AutoBaseOpMode{
 
                         ),
                         outtakeV4bSys.away(),
-                        liftSys.goTo(LiftSys.HIGH_RUNG - 400),
+                        liftSys.goTo(LiftSys.HIGH_RUNG - 200),
                         outtakeClawSys.release(),
                         new WaitCommand(150),
                         //PARK

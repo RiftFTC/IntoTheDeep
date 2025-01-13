@@ -23,7 +23,7 @@ public class LiftSys extends SubsystemBase {
 
     public static int NONE = 0;
     public static int LOW_RUNG = 0;
-    public static int HIGH_RUNG = 740;
+    public static int HIGH_RUNG = 950;
     public static int LOW_BUCKET = 740;
     public static int HIGH_BUCKET = 2000;
 
