@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.util.pathfinder;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import xyz.devmello.voyager.Voyager;
 import xyz.devmello.voyager.control.Controller;
 import xyz.devmello.voyager.control.GenericTurnController;
@@ -16,8 +18,9 @@ import xyz.devmello.voyager.robot.Odometry;
 import xyz.devmello.voyager.robot.Robot;
 import xyz.devmello.voyager.robot.components.AbstractMotor;
 import xyz.devmello.voyager.zones.Zone;
-
+@Config
 public class PathfinderRobot {
+    public static double coefficient = 0.05;
     private DcMotor dcMotorFrontRight;
     private DcMotor dcMotorFrontLeft;
     private DcMotor dcMotorBackRight;
@@ -29,19 +32,17 @@ public class PathfinderRobot {
     private Motor motorBackLeft;
 
     private Drive drive;
-    private Odometry odometry;
+    private PinpointOdometry odometry;
     private Robot robot;
 
-    private static final Controller turnController = new GenericTurnController(0.5);
+    private static final Controller turnController = new GenericTurnController(coefficient);
     private static final FollowerGenerator followerGenerator = new GenericFollowerGenerator(turnController);
-
-
 
     private Voyager voyager;
 
     public void init(HardwareMap map) {
 
-        Zone zone = new Zone(new Rectangle(new PointXY(10,10), new PointXY(10,15), new PointXY(15,15), new PointXY(15,10)), () -> {}, () -> {}, () -> {});
+        //Zone zone = new Zone(new Rectangle(new PointXY(10,10), new PointXY(10,15), new PointXY(15,15), new PointXY(15,10)), () -> {}, () -> {}, () -> {});
 
         dcMotorFrontRight = map.get(DcMotor.class, "fr");
         dcMotorFrontLeft = map.get(DcMotor.class, "fl");
@@ -81,7 +82,15 @@ public class PathfinderRobot {
 
         voyager = new Voyager(robot, followerGenerator);
 
-        voyager.addZone("test", zone);
+        //voyager.addZone("test", zone);
+    }
+
+    public Pose2D pos(){
+        return odometry.getPos();
+    }
+
+    public void update() {
+        odometry.update();
     }
 
     public Voyager pathfinder() {
