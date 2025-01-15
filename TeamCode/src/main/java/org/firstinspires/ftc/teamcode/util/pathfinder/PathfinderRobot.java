@@ -9,6 +9,7 @@ import xyz.devmello.voyager.control.Controller;
 import xyz.devmello.voyager.control.GenericTurnController;
 import xyz.devmello.voyager.follower.FollowerGenerator;
 import xyz.devmello.voyager.follower.generators.GenericFollowerGenerator;
+import xyz.devmello.voyager.geometry.Angle;
 import xyz.devmello.voyager.geometry.PointXY;
 import xyz.devmello.voyager.geometry.Rectangle;
 import xyz.devmello.voyager.robot.components.Motor;
@@ -73,7 +74,11 @@ public class PathfinderRobot {
                 motorFrontRight,
                 motorFrontLeft,
                 motorBackRight,
-                motorBackLeft
+                motorBackLeft,
+                Angle.ZERO,
+                false,
+                false,
+                true
         );
 
         odometry = new PinpointOdometry(map);

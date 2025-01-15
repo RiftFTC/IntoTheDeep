@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import xyz.devmello.voyager.utils.StringUtils;
+import android.util.Log;
 
 /**
  * Pathfinder's main logging API. The logging level Pathfinder uses can be
@@ -434,7 +435,7 @@ public class Logger {
 
             String className = tag.getName();
 
-            if (className.contains("me.wobblyyyy.pathfinder2")) return;
+            if (className.contains("xyz.devmello.voyager")) return;
         }
 
         log(level, tag.getSimpleName(), messageFormat, formatSpecifiers);
@@ -653,9 +654,8 @@ public class Logger {
     public static void run(LogLevel level, Runnable runnable) {
         LogLevel previousLevel = getLoggingLevel();
         Consumer<String> previousOutput = InternalPathfinderLogger.getOutput();
-
         setLoggingLevel(level);
-        setOutput(System.out::print);
+        setOutput(Logger::print);
 
         try {
             runnable.run();
@@ -676,5 +676,9 @@ public class Logger {
 
     public static void trace(Runnable runnable) {
         run(LogLevel.TRACE, runnable);
+    }
+
+    public static void print(String s) {
+        Log.i("Voyager", s);
     }
 }

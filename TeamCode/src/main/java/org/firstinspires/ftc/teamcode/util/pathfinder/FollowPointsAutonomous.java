@@ -42,6 +42,7 @@ public class FollowPointsAutonomous extends LinearOpMode {
         // while the op mode is going on
         while (opModeIsActive()) {
             pathfinderRobot.update();
+
             telemetry.addData("Position", voyager.getOdometry().getPosition().toString());
 //            Pose2D poseEstimate = pathfinderRobot.pos();
 //            telemetry.addData("x", poseEstimate.getX(DistanceUnit.INCH));
