@@ -15,18 +15,24 @@ public class LiftTuner extends LinearOpMode {
 
         TouchSensor touch = hardwareMap.get(TouchSensor.class, "touch");
         lift.stopAndResetEncoder();
-        lift.encoder.setDirection(Motor.Direction.REVERSE);
         encoder.stopAndResetEncoder();
 
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
+
             telemetry.addData("Lift Pos",lift.getCurrentPosition());
             telemetry.addData("Encoder POS", encoder.getCurrentPosition());
             telemetry.addData("Pressed", touch.isPressed());
             if (touch.isPressed()) {
                 encoder.resetEncoder();
                 lift.resetEncoder();
+                encoder.set(1);
+                lift.set(1);
+            } else {
+                encoder.set(0);
+                lift.set(0);
             }
+
             telemetry.update();
         }
     }

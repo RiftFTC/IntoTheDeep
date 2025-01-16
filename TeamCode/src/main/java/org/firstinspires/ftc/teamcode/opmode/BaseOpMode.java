@@ -114,7 +114,7 @@ public class BaseOpMode extends CommandOpMode {
 
     @SuppressLint("SdCardPath")
     public void setupMisc() {
-        //telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
         pipeline = new SampleTrackPipeline(team);
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName);
@@ -148,6 +148,8 @@ public class BaseOpMode extends CommandOpMode {
         tad("Hang Current", hang.motorEx.getCurrent(CurrentUnit.AMPS));
         tad("HANG POWER", hang.get());
         telemetry.addData("Encoder POS", lir.encoder.getPosition());
+        telemetry.addData("lir", lir.motorEx.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("lil", lil.motorEx.getCurrent(CurrentUnit.AMPS));
         double loop = System.nanoTime();
         telemetry.addData("hz ", 1000000000 / (loop - loopTime));
         loopTime = loop;

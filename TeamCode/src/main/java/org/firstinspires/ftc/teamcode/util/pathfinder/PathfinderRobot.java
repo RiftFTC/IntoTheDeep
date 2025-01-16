@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.util.pathfinder;
 
+import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -12,6 +13,7 @@ import xyz.devmello.voyager.follower.generators.GenericFollowerGenerator;
 import xyz.devmello.voyager.geometry.Angle;
 import xyz.devmello.voyager.geometry.PointXY;
 import xyz.devmello.voyager.geometry.Rectangle;
+import xyz.devmello.voyager.pathgen.LocalizedPathGen;
 import xyz.devmello.voyager.robot.components.Motor;
 import xyz.devmello.voyager.drive.MecanumDrive;
 import xyz.devmello.voyager.robot.Drive;
@@ -42,8 +44,6 @@ public class PathfinderRobot {
     private Voyager voyager;
 
     public void init(HardwareMap map) {
-
-        //Zone zone = new Zone(new Rectangle(new PointXY(10,10), new PointXY(10,15), new PointXY(15,15), new PointXY(15,10)), () -> {}, () -> {}, () -> {});
 
         dcMotorFrontRight = map.get(DcMotor.class, "fr");
         dcMotorFrontLeft = map.get(DcMotor.class, "fl");
@@ -87,7 +87,9 @@ public class PathfinderRobot {
 
         voyager = new Voyager(robot, followerGenerator);
 
-        //voyager.addZone("test", zone);
+        //voyager.addZone("box", zone);
+
+
     }
 
     public Pose2D pos(){
