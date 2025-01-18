@@ -1,16 +1,31 @@
 package org.firstinspires.ftc.teamcode.opencv;
 
+import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.arcrobotics.ftclib.command.*;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.firstinspires.ftc.teamcode.opencv.eocvtest.SamplePipeline;
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
+import org.firstinspires.ftc.teamcode.roadrunner.PinpointDrive;
+import org.firstinspires.ftc.teamcode.subsystem.ExtendoSys;
 import org.firstinspires.ftc.teamcode.subsystem.IntakeClawSys;
+import org.firstinspires.ftc.teamcode.subsystem.IntakeV4bSys;
+import org.firstinspires.ftc.teamcode.util.ActionCommand;
 import org.firstinspires.ftc.teamcode.util.filters.LowPassFilter;
 import org.firstinspires.ftc.teamcode.util.filters.MovingAverageFilter;
+import org.firstinspires.ftc.teamcode.util.math.Precision;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
+import java.util.Optional;
+
+import static org.firstinspires.ftc.teamcode.subsystem.IntakeV4bSys.POS_DOWN;
+
 @Config
 public class SampleTrackPipeline extends OpenCvPipeline {
 
@@ -58,6 +73,15 @@ public class SampleTrackPipeline extends OpenCvPipeline {
         double angle;
         String color;
         Point center;
+    }
+
+    static class GoToStone{
+        double angle;
+        Vector2d position;
+        public GoToStone(Vector2d position, double angle) {
+            this.position = position;
+            this.angle = angle;
+        }
     }
 
     ArrayList<AnalyzedStone> internalStoneList = new ArrayList<>();
@@ -180,6 +204,7 @@ public class SampleTrackPipeline extends OpenCvPipeline {
     public ArrayList<AnalyzedStone> getDetectedStones() {
         return clientStoneList;
     }
+
     public double getAngle() {
         if (clientStoneList.isEmpty()) {
             return -1;
@@ -203,6 +228,80 @@ public class SampleTrackPipeline extends OpenCvPipeline {
         }
     }
 
+    public GoToStone calculateMovementPose(Pose2d currentPose) {
+        double xCoverageInches = 14.80314960629921;
+        double yCoverageInches = 10.7440945;
+        if (clientStoneList.isEmpty()) {
+            return null;
+        }
+
+        // Assume the frame size is known
+        Point frameCenter = new Point(frameSize.width / 2, frameSize.height / 2);
+        AnalyzedStone closestStone = null;
+        double closestDistance = Double.MAX_VALUE;
+
+        for (AnalyzedStone stone : clientStoneList) {
+            double distanceToCenter = Math.hypot(stone.center.x - frameCenter.x, stone.center.y - frameCenter.y);
+            if (distanceToCenter < closestDistance) {
+                closestDistance = distanceToCenter;
+                closestStone = stone;
+            }
+        }
+
+        if (closestStone == null) {
+            return null;
+        }
+
+        // Calculate the offset in pixels from the frame center
+        double deltaX = closestStone.center.x - frameCenter.x;
+        double deltaY = closestStone.center.y - frameCenter.y;
+
+        // Convert pixel offset to real-world offset (in inches)
+        double realWorldX = (deltaX / frameSize.width) * xCoverageInches - 1;
+        double realWorldY = (deltaY / frameSize.height) * yCoverageInches;
+
+        // Log the results
+        Log.i("goTo X", String.valueOf(realWorldX));
+        Log.i("goTo Y", String.valueOf(realWorldY));
+
+        return new GoToStone(
+                new Vector2d(currentPose.position.x + realWorldX, currentPose.position.y + realWorldY),
+                closestStone.angle
+        );
+    }
+
+
+
+    public void getAction(PinpointDrive drive, IntakeClawSys intakeClaw, IntakeV4bSys intakeV4bSys, ExtendoSys extendoSys) {
+        GoToStone sample = calculateMovementPose(drive.pose);
+        if (sample != null) {
+            Vector2d samplePosition = sample.position;
+            Action goTo = drive.actionBuilder(drive.pose).strafeTo(samplePosition).build();
+            double angle = Math.round(Precision.calculateWeightedValue(IntakeClawSys.YAW_LEFT, IntakeClawSys.YAW_RIGHT, (sample.angle % 179) / 180) * 5) / 5.0;
+            schedule(
+                    new SequentialCommandGroup(
+                            new ParallelCommandGroup(
+                                    new ActionCommand(goTo),
+                                    intakeClaw.rotateYaw(angle)
+                            ),
+                            new SequentialCommandGroup(
+                                    new WaitCommand(200),
+                                    intakeV4bSys.goToPos(POS_DOWN - 0.03),
+                                    new WaitCommand(200),
+                                    intakeClaw.pinch(),
+                                    new WaitCommand(200),
+                                    intakeV4bSys.dropOff(),
+                                    extendoSys.goTo(ExtendoSys.EXTENDO_HOME)
+                            )
+                    )
+            );
+        }
+    }
+
+    private void schedule(Command command) {
+        CommandScheduler.getInstance().schedule(command);
+    }
+
     public void enableTracking() {
         IntakeClawSys.TRACK = true;
     }
@@ -210,32 +309,4 @@ public class SampleTrackPipeline extends OpenCvPipeline {
     public void disableTracking() {
         IntakeClawSys.TRACK = false;
     }
-
-//    @Override
-//    public void onViewportTapped() {
-//        toggleRecording = !toggleRecording;
-//
-//        if(toggleRecording)
-//        {
-//            /*
-//             * This is all you need to do to start recording.
-//             */
-//            phoneCam.startRecordingPipeline(
-//                    new PipelineRecordingParameters.Builder()
-//                            .setBitrate(4, PipelineRecordingParameters.BitrateUnits.Mbps)
-//                            .setEncoder(PipelineRecordingParameters.Encoder.H264)
-//                            .setOutputFormat(PipelineRecordingParameters.OutputFormat.MPEG_4)
-//                            .setFrameRate(30)
-//                            .setPath("/sdcard/pipeline_rec.mp4")
-//                            .build());
-//        }
-//        else
-//        {
-//            /*
-//             * Note: if you don't stop recording by yourself, it will be automatically
-//             * stopped for you at the end of your OpMode
-//             */
-//            phoneCam.stopRecordingPipeline();
-//        }
-//    }
 }

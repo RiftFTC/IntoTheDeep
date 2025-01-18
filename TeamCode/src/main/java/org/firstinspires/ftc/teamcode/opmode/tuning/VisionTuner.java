@@ -28,13 +28,14 @@ public class VisionTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         ActivityManager activityManager = (ActivityManager) hardwareMap.appContext.getSystemService(Context.ACTIVITY_SERVICE);
         ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-
+        SimpleServo ipr = new SimpleServo(hardwareMap, "iPos", 0, 255);
+        SimpleServo iPitch = new SimpleServo(hardwareMap, "iPitch", 0, 255);
         SimpleServo yaw = new SimpleServo(hardwareMap, "iYaw", 0, 180);
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
         pipeline = new SampleTrackPipeline(BaseOpMode.TEAM.BLUE);
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName);
         camera.setPipeline(pipeline);
-        FtcDashboard.getInstance().startCameraStream(camera, 0);
+
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         try {
             camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
@@ -51,10 +52,11 @@ public class VisionTuner extends LinearOpMode {
             Log.e("OpenCv", "Error opening camera");
             Log.e("OpenCv", e.getMessage());
         }
-        pipeline.enableTracking();
+        FtcDashboard.getInstance().startCameraStream(camera, 0);
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
-
+            ipr.setPosition(0.57);
+            iPitch.setPosition(0.76);
             if (gamepad1.a) {
                 yaw.setPosition(yawL);
             } else if (gamepad1.b) {
@@ -70,6 +72,5 @@ public class VisionTuner extends LinearOpMode {
             telemetry.addData("Angle", pipeline.getAngle());
             telemetry.update();
         }
-        pipeline.disableTracking();
     }
 }

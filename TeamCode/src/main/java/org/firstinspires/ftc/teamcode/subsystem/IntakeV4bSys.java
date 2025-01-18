@@ -12,11 +12,11 @@ public class IntakeV4bSys extends SubsystemBase {
 
     public static double POS_MID = 0.51;
     public static double POS_DOWN = 0.44;
-    public static double POS_IN = 0.83;
+    public static double POS_IN = 0.8;
     public static double POS_SPECIMEN_OUT = 0.65;
     public static double POS_SPECIMEN_IN = 0.66;
 
-    public static double ROLL_IN = 0.46;
+    public static double ROLL_IN = 0.54;
     public static double ROLL_MID = 0.8; //0.76
     public static double ROLL_OUT = 0.76;
 

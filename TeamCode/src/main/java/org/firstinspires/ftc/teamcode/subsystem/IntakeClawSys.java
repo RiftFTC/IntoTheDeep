@@ -30,6 +30,8 @@ public class IntakeClawSys extends SubsystemBase {
 
     private SampleTrackPipeline pipeline;
 
+    public static boolean AUTO = false;
+
     DoubleSupplier LTrigger, RTrigger;
 
     private double lastPos = 0;
@@ -91,7 +93,7 @@ public class IntakeClawSys extends SubsystemBase {
         } else if (LTrigger.getAsDouble() > 0) {
             yaw.rotateBy(-0.01);
         } else {
-            if (TRACK && pipeline != null) {
+            if (TRACK && pipeline != null && !AUTO) {
                 updatePipeline();
             }
         }

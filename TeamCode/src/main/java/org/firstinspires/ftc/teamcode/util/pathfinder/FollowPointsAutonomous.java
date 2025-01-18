@@ -9,7 +9,6 @@ import xyz.devmello.voyager.Voyager;
 import xyz.devmello.voyager.geometry.*;
 import xyz.devmello.voyager.pathgen.LocalizedPathGen;
 import xyz.devmello.voyager.zones.Zone;
-
 import java.util.ArrayList;
 import java.util.List;
 

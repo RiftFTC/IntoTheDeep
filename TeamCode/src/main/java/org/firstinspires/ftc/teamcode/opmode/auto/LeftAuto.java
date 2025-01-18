@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmode.auto;
 
+import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -11,6 +12,9 @@ import org.firstinspires.ftc.teamcode.roadrunner.PinpointDrive;
 import org.firstinspires.ftc.teamcode.subsystem.ExtendoSys;
 import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
 import org.firstinspires.ftc.teamcode.util.ActionCommand;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+
 import java.lang.Math;
 
 import static org.firstinspires.ftc.teamcode.subsystem.IntakeV4bSys.*;
@@ -44,7 +48,7 @@ public class LeftAuto extends AutoBaseOpMode{
         super.init();
         drive = new PinpointDrive(hardwareMap, new Pose2d(38.6, 64.5, Math.toRadians(180)));
         telemetry.addData("Initialization", true);
-        iClaw.setPosition(0.63);
+        oClaw.setPosition(0.5);
 
         preloadDropOffTraj = drive.actionBuilder(
                         new Pose2d(38.6, 64.5, Math.toRadians(180)))
@@ -68,15 +72,15 @@ public class LeftAuto extends AutoBaseOpMode{
 
         pickUp3Traj = drive.actionBuilder(
                         new Pose2d(52, 55.5, Math.toRadians(225)))
-                .strafeToSplineHeading(new Vector2d(45, 25.5), Math.toRadians(0));
+                .strafeToSplineHeading(new Vector2d(60.3, 43.9), Math.toRadians(285));
 
         dropOff3Traj = drive.actionBuilder(
-                        new Pose2d(45, 25.5, Math.toRadians(0)))
+                        new Pose2d(60.3, 43.9, Math.toRadians(285)))
                 .strafeToSplineHeading(new Vector2d(52, 55.5), Math.toRadians(225));
 
         parkTraj = drive.actionBuilder(
                         new Pose2d(52, 54.5, Math.toRadians(225)))
-                .strafeToSplineHeading(new Vector2d(34, 20.9), Math.toRadians(270));
+                .strafeToSplineHeading(new Vector2d(34, 5), Math.toRadians(180));
 
         preloadDropOff = preloadDropOffTraj.build();
         pickUp1 = pickUp1Traj.build();
@@ -91,79 +95,66 @@ public class LeftAuto extends AutoBaseOpMode{
                 new SequentialCommandGroup(
                         new ParallelCommandGroup(
                                 new ActionCommand(preloadDropOff),
-                                new SequentialCommandGroup(
-                                        outtakeClawSys.release(),
-                                        intakeV4bSys.dropOff(),
-                                        new WaitCommand(300),
-                                        outtakeV4bSys.setPitch(PITCH_HOME),
-                                        outtakeV4bSys.setArm(ARM_HOME),
-                                        new WaitCommand(300),
-                                        outtakeClawSys.grab(),
-                                        new WaitCommand(150),
-                                        intakeClawSys.release(),
-                                        new WaitCommand(50)
-                                )
+                                liftSys.goTo(LiftSys.HIGH_BUCKET)
+
                         ),
-                        new SequentialCommandGroup(liftSys.goTo(LiftSys.HIGH_BUCKET),
-                                outtakeV4bSys.setPitch(1),
-                                outtakeV4bSys.setArm(0.3),
-                                new WaitCommand(500),
-                                outtakeClawSys.release(),
-                                new WaitCommand(500),
-                                outtakeV4bSys.mid(),
-                                liftSys.goTo(LiftSys.NONE)
-                        ),
+                        outtakeV4bSys.away(),
+                        new WaitCommand(300),
+                        outtakeClawSys.release(),
+                        new WaitCommand(300),
                         new SequentialCommandGroup(
-                                new ActionCommand(pickUp1),
-                                new WaitCommand(300),
-                                new SequentialCommandGroup(
-                                        extendoSys.goTo(0.34),
-                                        intakeV4bSys.intake(),
+                                new ParallelCommandGroup(
+                                        outtakeV4bSys.mid(),
+                                        liftSys.goTo(LiftSys.NONE),
+                                        new ActionCommand(pickUp1),
                                         new SequentialCommandGroup(
                                                 intakeClawSys.intake(),
                                                 intakeClawSys.release()
                                         )
                                 ),
+                                new WaitCommand(200),
+                                new SequentialCommandGroup(
+                                        extendoSys.goTo(0.34),
+                                        intakeV4bSys.intake()
+                                ),
                                 intakeClawSys.release(),
                                 new SequentialCommandGroup(
                                         new WaitCommand(500),
-                                        intakeV4bSys.goToPos(POS_DOWN- 0.03),
+                                        intakeV4bSys.goToPos(POS_DOWN - 0.03),
                                         new WaitCommand(100),
                                         intakeClawSys.pinch(),
-                                        new WaitCommand(300),
+                                        new WaitCommand(200),
                                         intakeClawSys.dropoff(),
-                                        new WaitCommand(150),
                                         intakeV4bSys.dropOff()
                                 ),
                                 extendoSys.goTo(ExtendoSys.EXTENDO_HOME),
                                 outtakeClawSys.release(),
-                                new WaitCommand(700),
-                                new SequentialCommandGroup(
-                                        outtakeV4bSys.setPitch(PITCH_HOME),
-                                        new WaitCommand(100),
-                                        outtakeV4bSys.setArm(ARM_HOME),
-                                        new WaitCommand(200),
-                                        outtakeClawSys.grab(),
-                                        new WaitCommand(150),
-                                        intakeClawSys.release(),
-                                        new WaitCommand(50)
-                                ),
-                                new WaitCommand(250)
-                        ),
-                        new WaitCommand(300),
-                        new ParallelCommandGroup(liftSys.goTo(LiftSys.HIGH_BUCKET),
-                                new ActionCommand(dropOff1)
+                                new WaitCommand(600),
+                                new ParallelCommandGroup(
+                                        new ActionCommand(dropOff1),
+                                        new SequentialCommandGroup(
+                                                outtakeV4bSys.setPitch(PITCH_HOME),
+                                                new WaitCommand(100),
+                                                outtakeV4bSys.setArm(ARM_HOME),
+                                                new WaitCommand(200),
+                                                outtakeClawSys.grab(),
+                                                new WaitCommand(150),
+                                                intakeClawSys.release(),
+                                                new WaitCommand(50),
+                                                liftSys.goTo(LiftSys.HIGH_BUCKET)
+                                        )
+                                )
                         ),
                         outtakeV4bSys.away(),
-                        new WaitCommand(400),
+                        new WaitCommand(300),
                         outtakeClawSys.release(),
-                        new WaitCommand(500),
+                        new WaitCommand(400),
                         outtakeV4bSys.mid(),
                         new ParallelCommandGroup(
                                 new ActionCommand(pickUp2),
                                 liftSys.goTo(LiftSys.NONE)
                         ),
-                        new WaitCommand(300),
+                        new WaitCommand(200),
                         new SequentialCommandGroup(
                                 extendoSys.goTo(0.35),
                                 intakeV4bSys.intake(),
@@ -182,31 +173,29 @@ public class LeftAuto extends AutoBaseOpMode{
                                 intakeClawSys.pinch(),
                                 new WaitCommand(300),
                                 intakeClawSys.dropoff(),
-                                new WaitCommand(150),
                                 intakeV4bSys.dropOff()
                         ),
                         extendoSys.goTo(ExtendoSys.EXTENDO_HOME),
                         outtakeClawSys.release(),
-                        new WaitCommand(700),
-                        new SequentialCommandGroup(
-                                outtakeV4bSys.setPitch(PITCH_HOME),
-                                new WaitCommand(100),
-                                outtakeV4bSys.setArm(ARM_HOME),
-                                new WaitCommand(300),
-                                outtakeClawSys.grab(),
-                                new WaitCommand(150),
-                                intakeClawSys.release(),
-                                new WaitCommand(50)
-                        ),
-                        new WaitCommand(300),
+                        new WaitCommand(500),
                         new ParallelCommandGroup(
                                 new ActionCommand(dropOff2),
-                                liftSys.goTo(LiftSys.HIGH_BUCKET)
+                                new SequentialCommandGroup(
+                                        outtakeV4bSys.setPitch(PITCH_HOME),
+                                        new WaitCommand(100),
+                                        outtakeV4bSys.setArm(ARM_HOME),
+                                        new WaitCommand(300),
+                                        outtakeClawSys.grab(),
+                                        new WaitCommand(150),
+                                        intakeClawSys.release(),
+                                        new WaitCommand(50),
+                                        liftSys.goTo(LiftSys.HIGH_BUCKET)
+                                )
                         ),
                         new SequentialCommandGroup(
                                 outtakeV4bSys.setPitch(1),
                                 outtakeV4bSys.setArm(0.3),
-                                new WaitCommand(500),
+                                new WaitCommand(300),
                                 outtakeClawSys.release(),
                                 new WaitCommand(400),
                                 outtakeV4bSys.mid()
@@ -217,22 +206,24 @@ public class LeftAuto extends AutoBaseOpMode{
                         ),
                         new WaitCommand(300),
                         new SequentialCommandGroup(
-                                extendoSys.goTo(0.32),
+                                extendoSys.goTo(0.29),
                                 intakeV4bSys.intake(),
                                 new SequentialCommandGroup(
-                                        intakeClawSys.rotateYaw(0),
+                                        intakeClawSys.rotateYaw(0.3),
                                         intakeClawSys.release()
                                 ),
-                                new WaitCommand(500),
+                                new WaitCommand(400),
                                 intakeV4bSys.goToPos(POS_DOWN - 0.03),
                                 new WaitCommand(100),
                                 intakeClawSys.pinch(),
                                 new WaitCommand(300),
                                 intakeClawSys.dropoff(),
-                                new WaitCommand(150),
                                 intakeV4bSys.dropOff(),
                                 extendoSys.goTo(ExtendoSys.EXTENDO_HOME),
-                                new WaitCommand(700),
+                                new WaitCommand(500)
+                        ),
+                        new ParallelCommandGroup(
+                                new ActionCommand(dropOff3),
                                 new SequentialCommandGroup(
                                         outtakeV4bSys.setPitch(PITCH_HOME),
                                         new WaitCommand(100),
@@ -241,28 +232,28 @@ public class LeftAuto extends AutoBaseOpMode{
                                         outtakeClawSys.grab(),
                                         new WaitCommand(150),
                                         intakeClawSys.release(),
-                                        new WaitCommand(50)
+                                        new WaitCommand(50),
+                                        liftSys.goTo(LiftSys.HIGH_BUCKET)
                                 )
-                        ),
-                        new WaitCommand(300),
-                        new ParallelCommandGroup(
-                                new ActionCommand(dropOff3),
-                                liftSys.goTo(LiftSys.HIGH_BUCKET)
                         ),
                         new SequentialCommandGroup(
                                 outtakeV4bSys.setPitch(1),
                                 outtakeV4bSys.setArm(0.3),
-                                new WaitCommand(500),
+                                new WaitCommand(300),
                                 outtakeClawSys.release(),
-                                new WaitCommand(500),
-                                outtakeV4bSys.mid()
-
+                                new WaitCommand(400)
                         ),
                         new ParallelCommandGroup(
+                                outtakeV4bSys.mid(),
                                 liftSys.goTo(LiftSys.NONE),
                                 new ActionCommand(park)
-                        )
-
+                        ),
+                        extendoSys.goTo(0.3),
+                        intakeV4bSys.goToPos(0.6),
+                        intakeV4bSys.goToRoll(0.8),
+                        new InstantCommand(pipeline::enableTracking),
+                        new WaitCommand(4000),
+                        new InstantCommand(()-> pipeline.getAction(drive,intakeClawSys, intakeV4bSys,extendoSys))
                 )
         );
     }

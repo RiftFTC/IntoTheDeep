@@ -3,14 +3,13 @@ package org.firstinspires.ftc.teamcode.subsystem;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 @Config
 public class OuttakeV4BSys extends SubsystemBase {
 
-    public static double PITCH_HOME = 0.13;
-    public static double PITCH_AWAY = 1;
+    public static double PITCH_HOME = 0.0;
+    public static double PITCH_AWAY = 0.95;
     public static double PITCH_MID = 0.5;
     public static double ARM_MID = 0.5;
     public static double ARM_HOME = 0.7;

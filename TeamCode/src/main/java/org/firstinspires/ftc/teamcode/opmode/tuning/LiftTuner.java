@@ -24,8 +24,6 @@ public class LiftTuner extends LinearOpMode {
             telemetry.addData("Encoder POS", encoder.getCurrentPosition());
             telemetry.addData("Pressed", touch.isPressed());
             if (touch.isPressed()) {
-                encoder.resetEncoder();
-                lift.resetEncoder();
                 encoder.set(1);
                 lift.set(1);
             } else {

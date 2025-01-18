@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmode.auto;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.util.Log;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -23,6 +24,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.PinpointDrive;
 import org.firstinspires.ftc.teamcode.subsystem.*;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.List;
 
@@ -69,6 +71,26 @@ public class AutoBaseOpMode extends OpMode {
         initSys();
         setupMisc();
         register(extendoSys, liftSys, intakeClawSys, outtakeClawSys, timeSys, intakeV4bSys, outtakeV4bSys);
+        intakeClawSys.setPipeline(pipeline);
+        IntakeClawSys.AUTO = true;
+        try {
+            camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+                @Override
+                public void onOpened() {
+                    camera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                    telemetry.addData("Camera has been initialized", true);
+                    telemetry.update();
+                }
+
+                @Override
+                public void onError(int errorCode) {
+                    Log.e("OpenCv", "Error opening camera: " + errorCode);
+                }
+            });
+        } catch (Exception e) {
+            Log.e("OpenCv", "Error opening camera");
+            Log.e("OpenCv", e.getMessage());
+        }
     }
 
     public void initHw() {
@@ -114,6 +136,7 @@ public class AutoBaseOpMode extends OpMode {
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName);
         camera.setPipeline(pipeline);
         allHubs = hardwareMap.getAll(LynxModule.class);
+        FtcDashboard.getInstance().startCameraStream(camera, 0);
         for (LynxModule module : allHubs) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
