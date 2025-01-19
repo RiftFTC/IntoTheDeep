@@ -54,4 +54,5 @@ dependencies {
     implementation 'com.github.jdhs-ftc:road-runner-ftc-otos:8e83c17ff7'
     implementation 'org.apache.commons:commons-math3:3.6.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    implementation 'com.github.DevMello:Voyager:1.0.0-ALPHA'
 }

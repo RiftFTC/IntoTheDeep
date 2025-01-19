@@ -158,4 +158,11 @@ public class AutoBaseOpMode extends OpMode {
     public void loop() {
         CommandScheduler.getInstance().run();
     }
+
+    @Override
+    public void stop() {
+        super.stop();
+        IntakeClawSys.AUTO = false;
+    }
+
 }

@@ -33,8 +33,8 @@ public class PinpointOdometry extends AbstractOdometry {
         driver.setPosition(new Pose2d(0, 0, Math.toRadians(0)));
     }
 
-
-    public void update() {
+    @Override
+    public void tick() {
         driver.update();
     }
 

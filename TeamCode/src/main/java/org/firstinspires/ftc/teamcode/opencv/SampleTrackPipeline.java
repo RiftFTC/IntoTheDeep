@@ -47,7 +47,7 @@ public class SampleTrackPipeline extends OpenCvPipeline {
 
     Mat contoursOnPlainImageMat = new Mat();
 
-    Size frameSize = new Size(320, 240);
+    public Size frameSize = new Size(320, 240);
 
     /*
      * Threshold values
@@ -228,9 +228,11 @@ public class SampleTrackPipeline extends OpenCvPipeline {
         }
     }
 
-    public GoToStone calculateMovementPose(Pose2d currentPose) {
+    private GoToStone calculateMovementPose(Pose2d currentPose) {
         double xCoverageInches = 14.80314960629921;
         double yCoverageInches = 10.7440945;
+        double cameraOffsetInches = 1.3; // Offset for the camera being 2 inches above the claw
+
         if (clientStoneList.isEmpty()) {
             return null;
         }
@@ -257,8 +259,8 @@ public class SampleTrackPipeline extends OpenCvPipeline {
         double deltaY = closestStone.center.y - frameCenter.y;
 
         // Convert pixel offset to real-world offset (in inches)
-        double realWorldX = (deltaX / frameSize.width) * xCoverageInches - 1;
-        double realWorldY = (deltaY / frameSize.height) * yCoverageInches;
+        double realWorldX = (deltaX / frameSize.width) * xCoverageInches - 2;
+        double realWorldY = (deltaY / frameSize.height) * yCoverageInches - cameraOffsetInches;
 
         // Log the results
         Log.i("goTo X", String.valueOf(realWorldX));
@@ -280,6 +282,7 @@ public class SampleTrackPipeline extends OpenCvPipeline {
             double angle = Math.round(Precision.calculateWeightedValue(IntakeClawSys.YAW_LEFT, IntakeClawSys.YAW_RIGHT, (sample.angle % 179) / 180) * 5) / 5.0;
             schedule(
                     new SequentialCommandGroup(
+
                             new ParallelCommandGroup(
                                     new ActionCommand(goTo),
                                     intakeClaw.rotateYaw(angle)

@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.command.*;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.roadrunner.PinpointDrive;
 import org.firstinspires.ftc.teamcode.subsystem.ExtendoSys;
 import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
@@ -248,11 +249,11 @@ public class LeftAuto extends AutoBaseOpMode{
                                 liftSys.goTo(LiftSys.NONE),
                                 new ActionCommand(park)
                         ),
-                        extendoSys.goTo(0.3),
+                        extendoSys.goTo(0.34),
                         intakeV4bSys.goToPos(0.6),
                         intakeV4bSys.goToRoll(0.8),
                         new InstantCommand(pipeline::enableTracking),
-                        new WaitCommand(4000),
+                        new WaitCommand(1200),
                         new InstantCommand(()-> pipeline.getAction(drive,intakeClawSys, intakeV4bSys,extendoSys))
                 )
         );
@@ -266,5 +267,10 @@ public class LeftAuto extends AutoBaseOpMode{
         telemetry.addData("x", poseEstimate.position.x);
         telemetry.addData("y", poseEstimate.position.y);
         telemetry.addData("heading", poseEstimate.heading);
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
     }
 }

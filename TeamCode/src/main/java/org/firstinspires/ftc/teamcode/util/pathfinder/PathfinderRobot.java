@@ -96,9 +96,6 @@ public class PathfinderRobot {
         return odometry.getPos();
     }
 
-    public void update() {
-        odometry.update();
-    }
 
     public Voyager pathfinder() {
         return this.voyager;

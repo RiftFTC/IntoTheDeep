@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.roadrunner.PinpointDrive;
 import org.firstinspires.ftc.teamcode.subsystem.ExtendoSys;
 import org.firstinspires.ftc.teamcode.subsystem.IntakeV4bSys;
@@ -197,6 +198,7 @@ public class RightAltAuto extends AutoBaseOpMode{
         liftSys.periodic();
         super.loop();
         Pose2d poseEstimate = drive.odometry.getPositionRR();
+        Robot.startPose = poseEstimate;
         telemetry.addData("x", poseEstimate.position.x);
         telemetry.addData("y", poseEstimate.position.y);
         telemetry.addData("heading", poseEstimate.heading);
