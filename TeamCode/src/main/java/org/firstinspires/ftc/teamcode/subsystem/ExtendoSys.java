@@ -16,7 +16,6 @@ public class ExtendoSys extends SubsystemBase {
     public static double EXTENDO_POP = 0.2;
 
     private double targetPos = 0.0;
-    GoBildaPinpointDriverRR odo;
 
     public enum State {
         EXTENDED,
@@ -24,12 +23,11 @@ public class ExtendoSys extends SubsystemBase {
     }
     public static State state = State.RETRACTED;
 
-    public ExtendoSys(SimpleServo extendoL, SimpleServo extendoR, GoBildaPinpointDriverRR odo) {
+    public ExtendoSys(SimpleServo extendoL, SimpleServo extendoR) {
         this.extendoL = extendoL;
         this.extendoR = extendoR;
         this.extendoL.setPosition(EXTENDO_HOME);
         this.extendoR.setPosition(EXTENDO_HOME);
-        this.odo = odo;
     }
 
     public Command goTo(double targetPos) {

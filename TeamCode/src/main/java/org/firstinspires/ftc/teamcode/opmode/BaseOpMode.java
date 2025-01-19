@@ -17,7 +17,9 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opencv.SampleTrackPipeline;
+import org.firstinspires.ftc.teamcode.roadrunner.PinpointDrive;
 import org.firstinspires.ftc.teamcode.subsystem.*;
 import org.firstinspires.ftc.teamcode.util.GamepadServer;
 import org.firstinspires.ftc.teamcode.util.GoBildaPinpointDriver;
@@ -37,8 +39,7 @@ public class BaseOpMode extends CommandOpMode {
     private double loopTime = 0;
     protected SimpleServo ipr, iPitch, extL, extR, iClaw, iYaw, oClaw, oPitch, oPos, transmission;
     protected TouchSensor touch;
-    protected GoBildaPinpointDriverRR odo;
-
+    protected PinpointDrive pinpointDrive;
     protected DriveSys driveSys;
     protected ExtendoSys extendoSys;
     protected LiftSys liftSys;
@@ -92,7 +93,6 @@ public class BaseOpMode extends CommandOpMode {
         oPos = new SimpleServo(hardwareMap, "oPos", 0, 180);
         transmission = new SimpleServo(hardwareMap, "trans", 0, 180);
         touch = hardwareMap.get(TouchSensor.class, "touch");
-        odo = hardwareMap.get(GoBildaPinpointDriverRR.class, "odo");
 
     }
 
@@ -101,8 +101,9 @@ public class BaseOpMode extends CommandOpMode {
     }
 
     public void initSys() {
+        pinpointDrive = new PinpointDrive(hardwareMap, Robot.startPose);
         driveSys = new DriveSys(fl, fr, bl ,br);
-        extendoSys = new ExtendoSys(extL,extR, odo);
+        extendoSys = new ExtendoSys(extL,extR);
         liftSys = new LiftSys(lil, lir, gamepadEx2::getRightY, touch);
         intakeV4bSys = new IntakeV4bSys(ipr, iPitch);
         intakeClawSys = new IntakeClawSys(iClaw, iYaw, ()-> gamepadEx1.getTrigger(LEFT_TRIGGER), () -> gamepadEx1.getTrigger(RIGHT_TRIGGER));
@@ -141,6 +142,7 @@ public class BaseOpMode extends CommandOpMode {
     @Override
     public void run() {
         super.run();
+        pinpointDrive.updatePoseEstimate();
 //        activityManager.getMemoryInfo(memoryInfo);
 //        tad("Available Memory", (float) memoryInfo.availMem / (float) memoryInfo.totalMem * 100.0F);
         tad("ANGLE", pipeline.getAngle());

@@ -37,7 +37,6 @@ public class AutoBaseOpMode extends OpMode {
     protected MotorEx fl, fr, bl, br, lil, lir, hang;
 
     protected SimpleServo ipr, iPitch, extL, extR, iClaw, iYaw, oClaw, oPitch, oPos, transmission;
-    protected GoBildaPinpointDriverRR odo;
     protected PinpointDrive drive;
     protected ExtendoSys extendoSys;
     protected LiftSys liftSys;
@@ -112,7 +111,6 @@ public class AutoBaseOpMode extends OpMode {
         oPos = new SimpleServo(hardwareMap, "oPos", 0, 180);
         transmission = new SimpleServo(hardwareMap, "trans", 0, 180);
         touch = hardwareMap.get(TouchSensor.class, "touch");
-        odo = hardwareMap.get(GoBildaPinpointDriverRR.class, "odo");
     }
 
     public void configHw() {
@@ -120,7 +118,7 @@ public class AutoBaseOpMode extends OpMode {
     }
 
     public void initSys() {
-        extendoSys = new ExtendoSys(extL,extR, odo);
+        extendoSys = new ExtendoSys(extL,extR);
         liftSys = new LiftSys(lil, lir, gamepadEx1::getRightY, touch);
         intakeV4bSys = new IntakeV4bSys(ipr, iPitch);
         intakeClawSys = new IntakeClawSys(iClaw, iYaw, ()-> gamepadEx1.getTrigger(LEFT_TRIGGER), () -> gamepadEx1.getTrigger(RIGHT_TRIGGER));

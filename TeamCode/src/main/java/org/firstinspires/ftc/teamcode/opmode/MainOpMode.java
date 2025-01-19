@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
 import android.util.Log;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.command.*;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystem.*;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -34,6 +37,7 @@ public class MainOpMode extends BaseOpMode {
             Log.e("OpenCv", "Error opening camera");
             Log.e("OpenCv", e.getMessage());
         }
+
 
 
         gb1(GamepadKeys.Button.DPAD_LEFT).toggleWhenPressed(outtakeClawSys.grab(), outtakeClawSys.release());
@@ -115,18 +119,14 @@ public class MainOpMode extends BaseOpMode {
                 )
         );
 
+        gb2(GamepadKeys.Button.START).whenPressed(
+                new InstantCommand(()-> pinpointDrive.pose = new Pose2d(new Vector2d(63.3, -62.2), Math.toRadians(90)))
+        );
 
-
-//        gb2(GamepadKeys.Button.START).whenPressed(
-//                new SequentialCommandGroup(
-//                        liftSys.goTo(LiftSys.LOW_BUCKET),
-//                        new WaitCommand(100),
-//                        new ParallelCommandGroup(
-//                                liftSys.vibrate(1500, 0.2),
-//                                transmissionSys.shiftUp()
-//                        )
-//                )
-//        );
+        gb1(GamepadKeys.Button.DPAD_DOWN).toggleWhenPressed(
+                new InstantCommand(()-> Robot.specimenPickup(pinpointDrive, outtakeV4bSys, outtakeClawSys, liftSys)),
+                new InstantCommand(()-> Robot.specimenScore(pinpointDrive, outtakeV4bSys, outtakeClawSys, liftSys))
+        );
 
         gb1(GamepadKeys.Button.DPAD_RIGHT).toggleWhenPressed(
                 new ParallelCommandGroup(

@@ -69,15 +69,15 @@ public class SampleTrackPipeline extends OpenCvPipeline {
     static final Scalar BLUE = new Scalar(0, 0, 255);
     static final Scalar YELLOW = new Scalar(255, 255, 0);
 
-    static class AnalyzedStone {
-        double angle;
+    public static class AnalyzedStone {
+        public double angle;
         String color;
-        Point center;
+        public Point center;
     }
 
-    static class GoToStone{
-        double angle;
-        Vector2d position;
+    public static class GoToStone{
+        public double angle;
+        public Vector2d position;
         public GoToStone(Vector2d position, double angle) {
             this.position = position;
             this.angle = angle;
@@ -231,7 +231,7 @@ public class SampleTrackPipeline extends OpenCvPipeline {
     private GoToStone calculateMovementPose(Pose2d currentPose) {
         double xCoverageInches = 14.80314960629921;
         double yCoverageInches = 10.7440945;
-        double cameraOffsetInches = 1.3; // Offset for the camera being 2 inches above the claw
+        double cameraOffsetInches = 1;
 
         if (clientStoneList.isEmpty()) {
             return null;
