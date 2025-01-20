@@ -36,7 +36,7 @@ public class FollowPointsAutonomous extends LinearOpMode {
         // initialize pathfinder and the pathfinder robot
         PathfinderRobot pathfinderRobot = new PathfinderRobot();
         pathfinderRobot.init(hardwareMap);
-        Voyager voyager = pathfinderRobot.pathfinder();
+        Voyager voyager = pathfinderRobot.voyager();
 
         voyager.setSpeed(0.5);
         voyager.setAngleTolerance(Angle.fromDeg(4));
@@ -47,7 +47,6 @@ public class FollowPointsAutonomous extends LinearOpMode {
 
         // while the op mode is going on
         while (opModeIsActive()) {
-
             telemetry.addData("Position", voyager.getOdometry().getPosition().toString());
 
             telemetry.addData("tolerance", voyager.getPosition().isNear(new PointXYZ(20,-20,Angle.fromDeg(0)), 5, Angle.fromDeg(15)));

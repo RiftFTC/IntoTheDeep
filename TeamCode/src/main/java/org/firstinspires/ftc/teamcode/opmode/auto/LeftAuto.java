@@ -270,8 +270,4 @@ public class LeftAuto extends AutoBaseOpMode{
         telemetry.addData("heading", poseEstimate.heading);
     }
 
-    @Override
-    public void stop() {
-        super.stop();
-    }
 }

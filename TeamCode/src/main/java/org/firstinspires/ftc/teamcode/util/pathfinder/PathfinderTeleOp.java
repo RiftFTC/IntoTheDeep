@@ -15,7 +15,7 @@ public class PathfinderTeleOp extends LinearOpMode {
         // pretty cool pathfinding
         PathfinderRobot robot = new PathfinderRobot();
         robot.init(hardwareMap);
-        Voyager voyager = robot.pathfinder();
+        Voyager voyager = robot.voyager();
 
         // wait for the game to start
         waitForStart();

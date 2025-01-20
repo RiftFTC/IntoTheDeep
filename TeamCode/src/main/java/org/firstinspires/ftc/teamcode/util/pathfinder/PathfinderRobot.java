@@ -86,18 +86,10 @@ public class PathfinderRobot {
         robot = new Robot(drive, odometry);
 
         voyager = new Voyager(robot, followerGenerator);
-
-        //voyager.addZone("box", zone);
-
-
-    }
-
-    public Pose2D pos(){
-        return odometry.getPos();
     }
 
 
-    public Voyager pathfinder() {
+    public Voyager voyager() {
         return this.voyager;
     }
 }

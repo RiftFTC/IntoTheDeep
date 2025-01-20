@@ -67,35 +67,33 @@ public class MeepMeepTesting {
                 //PRELOAD
                 .strafeTo(new Vector2d(4, -34.9))
                                 .waitSeconds(1)
-                //DROP OFF ALL 3
-                .strafeToLinearHeading(new Vector2d(58.7, -50), Math.toRadians(90),defaultVelConstraint, defaultAccelConstraint)
-                .turnTo(Math.toRadians(115))
-                        .waitSeconds(1)
-                        .turnTo(Math.toRadians(90))
-                        .waitSeconds(1)
-                        .turnTo(Math.toRadians(70))
-                // SCORE 1
-                        .strafeToLinearHeading(new Vector2d(34.7, -60), Math.toRadians(90), defaultVelConstraint, defaultAccelConstraint)
-                        .waitSeconds(0.5)
-                .strafeToLinearHeading(new Vector2d(6, -34.9), Math.toRadians(270),defaultVelConstraint, defaultAccelConstraint)
-                .waitSeconds(1)
-//                // PICKUP 2
-//                .strafeTo(new Vector2d(34.7, -39.8), defaultVelConstraint, defaultAccelConstraint)
-//                // SCORE 2
-//                .strafeTo(new Vector2d(8, -34.9), defaultVelConstraint, defaultAccelConstraint)
-//                // PICKUP 3
-//                .strafeTo(new Vector2d(34.7, -39.8), defaultVelConstraint, defaultAccelConstraint)
-//                // SCORE 3
-//                .strafeTo(new Vector2d(10, -34.9), defaultVelConstraint, defaultAccelConstraint)
-                .strafeToLinearHeading(new Vector2d(34.7, -60), Math.toRadians(90),defaultVelConstraint, defaultAccelConstraint)
-                                .waitSeconds(0.5)
-                                .strafeToLinearHeading(new Vector2d(8, -34.9), Math.toRadians(270),defaultVelConstraint, defaultAccelConstraint)
-                                .waitSeconds(1)
-                                .strafeToLinearHeading(new Vector2d(34.7, -60), Math.toRadians(90),defaultVelConstraint, defaultAccelConstraint)
-                                .waitSeconds(0.5)
-                                .strafeToLinearHeading(new Vector2d(10, -34.9), Math.toRadians(270),defaultVelConstraint, defaultAccelConstraint)
-                                .waitSeconds(1)
-
+                .strafeToLinearHeading(new Vector2d(20, -36), Math.toRadians(90))
+//                //DROP OFF ALL 3
+//                .strafeToLinearHeading(new Vector2d(58.7, -50), Math.toRadians(115),defaultVelConstraint, defaultAccelConstraint)
+//                    .waitSeconds(1)
+//                    .turnTo(Math.toRadians(90))
+//                // SCORE 1
+//                        .strafeToLinearHeading(new Vector2d(34.7, -60), Math.toRadians(90), defaultVelConstraint, defaultAccelConstraint)
+//                        .waitSeconds(0.5)
+//                .strafeToLinearHeading(new Vector2d(6, -34.9), Math.toRadians(270),defaultVelConstraint, defaultAccelConstraint)
+//                .waitSeconds(1)
+////                // PICKUP 2
+////                .strafeTo(new Vector2d(34.7, -39.8), defaultVelConstraint, defaultAccelConstraint)
+////                // SCORE 2
+////                .strafeTo(new Vector2d(8, -34.9), defaultVelConstraint, defaultAccelConstraint)
+////                // PICKUP 3
+////                .strafeTo(new Vector2d(34.7, -39.8), defaultVelConstraint, defaultAccelConstraint)
+////                // SCORE 3
+////                .strafeTo(new Vector2d(10, -34.9), defaultVelConstraint, defaultAccelConstraint)
+//                .strafeToLinearHeading(new Vector2d(34.7, -60), Math.toRadians(90),defaultVelConstraint, defaultAccelConstraint)
+//                                .waitSeconds(0.5)
+//                                .strafeToLinearHeading(new Vector2d(8, -34.9), Math.toRadians(270),defaultVelConstraint, defaultAccelConstraint)
+//                                .waitSeconds(1)
+//                                .strafeToLinearHeading(new Vector2d(34.7, -60), Math.toRadians(90),defaultVelConstraint, defaultAccelConstraint)
+//                                .waitSeconds(0.5)
+//                                .strafeToLinearHeading(new Vector2d(10, -34.9), Math.toRadians(270),defaultVelConstraint, defaultAccelConstraint)
+//                                .waitSeconds(1)
+//
 
 
 
