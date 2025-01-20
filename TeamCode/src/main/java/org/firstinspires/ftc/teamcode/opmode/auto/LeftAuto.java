@@ -53,35 +53,35 @@ public class LeftAuto extends AutoBaseOpMode{
 
         preloadDropOffTraj = drive.actionBuilder(
                         new Pose2d(38.6, 64.5, Math.toRadians(180)))
-                .strafeToSplineHeading(new Vector2d(52, 55.5), Math.toRadians(225));
+                .strafeToSplineHeading(new Vector2d(54, 53.5), Math.toRadians(225));
 
         pickUp1Traj = drive.actionBuilder(
-                        new Pose2d(52, 54.5, Math.toRadians(225)))
+                        new Pose2d(54, 53.5, Math.toRadians(225)))
                 .strafeToSplineHeading(new Vector2d(51.6, 49.5), Math.toRadians(260));
 
         dropOff1Traj = drive.actionBuilder(
                         new Pose2d(51.6, 49.5, Math.toRadians(260)))
-                .strafeToSplineHeading(new Vector2d(52, 55.5), Math.toRadians(225));
+                .strafeToSplineHeading(new Vector2d(54, 53.5), Math.toRadians(225));
 
         pickUp2Traj = drive.actionBuilder(
-                        new Pose2d(52, 54.5, Math.toRadians(225)))
-                .strafeToSplineHeading(new Vector2d(57, 50.5), Math.toRadians(traj2A));
+                        new Pose2d(54, 53.5, Math.toRadians(225)))
+                .strafeToSplineHeading(new Vector2d(55.5, 50.5), Math.toRadians(traj2A));
 
         dropOff2Traj = drive.actionBuilder(
                         new Pose2d(57, 50.5, Math.toRadians(traj2A)))
-                .strafeToSplineHeading(new Vector2d(52, 55.5), Math.toRadians(225));
+                .strafeToSplineHeading(new Vector2d(54, 53.5), Math.toRadians(225));
 
         pickUp3Traj = drive.actionBuilder(
-                        new Pose2d(52, 55.5, Math.toRadians(225)))
+                        new Pose2d(54, 53.5, Math.toRadians(225)))
                 .strafeToSplineHeading(new Vector2d(60.3, 43.9), Math.toRadians(285));
 
         dropOff3Traj = drive.actionBuilder(
                         new Pose2d(60.3, 43.9, Math.toRadians(285)))
-                .strafeToSplineHeading(new Vector2d(52, 55.5), Math.toRadians(225));
+                .strafeToSplineHeading(new Vector2d(54, 53.5), Math.toRadians(225));
 
         parkTraj = drive.actionBuilder(
-                        new Pose2d(52, 54.5, Math.toRadians(225)))
-                .strafeToSplineHeading(new Vector2d(34, 5), Math.toRadians(180));
+                        new Pose2d(54, 53.5, Math.toRadians(225)))
+                .strafeToSplineHeading(new Vector2d(29, 5), Math.toRadians(180));
 
         preloadDropOff = preloadDropOffTraj.build();
         pickUp1 = pickUp1Traj.build();
@@ -147,9 +147,9 @@ public class LeftAuto extends AutoBaseOpMode{
                                 )
                         ),
                         outtakeV4bSys.away(),
-                        new WaitCommand(300),
-                        outtakeClawSys.release(),
                         new WaitCommand(400),
+                        outtakeClawSys.release(),
+                        new WaitCommand(200),
                         outtakeV4bSys.mid(),
                         new ParallelCommandGroup(
                                 new ActionCommand(pickUp2),
@@ -196,23 +196,24 @@ public class LeftAuto extends AutoBaseOpMode{
                         new SequentialCommandGroup(
                                 outtakeV4bSys.setPitch(1),
                                 outtakeV4bSys.setArm(0.3),
-                                new WaitCommand(300),
-                                outtakeClawSys.release(),
                                 new WaitCommand(400),
+                                outtakeClawSys.release(),
+                                new WaitCommand(200),
                                 outtakeV4bSys.mid()
                         ),
                         new ParallelCommandGroup(
                                 liftSys.goTo(LiftSys.NONE),
-                                new ActionCommand(pickUp3)
+                                new ActionCommand(pickUp3),
+                                new InstantCommand(pipeline::enableTracking)
                         ),
                         new WaitCommand(300),
                         new SequentialCommandGroup(
                                 extendoSys.goTo(0.29),
                                 intakeV4bSys.intake(),
                                 new SequentialCommandGroup(
-                                        intakeClawSys.rotateYaw(0.3),
                                         intakeClawSys.release()
                                 ),
+                                new InstantCommand(pipeline::disableTracking),
                                 new WaitCommand(400),
                                 intakeV4bSys.goToPos(POS_DOWN - 0.03),
                                 new WaitCommand(100),
@@ -231,7 +232,7 @@ public class LeftAuto extends AutoBaseOpMode{
                                         outtakeV4bSys.setArm(ARM_HOME),
                                         new WaitCommand(200),
                                         outtakeClawSys.grab(),
-                                        new WaitCommand(150),
+                                        new WaitCommand(200),
                                         intakeClawSys.release(),
                                         new WaitCommand(50),
                                         liftSys.goTo(LiftSys.HIGH_BUCKET)
@@ -247,14 +248,14 @@ public class LeftAuto extends AutoBaseOpMode{
                         new ParallelCommandGroup(
                                 outtakeV4bSys.mid(),
                                 liftSys.goTo(LiftSys.NONE),
-                                new ActionCommand(park)
+                                new ActionCommand(park),
+                                new InstantCommand(pipeline::enableTracking)
                         ),
                         extendoSys.goTo(0.34),
                         intakeV4bSys.goToPos(0.6),
                         intakeV4bSys.goToRoll(0.8),
-                        new InstantCommand(pipeline::enableTracking),
-                        new WaitCommand(1200),
-                        new InstantCommand(()-> pipeline.getAction(drive,intakeClawSys, intakeV4bSys,extendoSys))
+                        new WaitCommand(400),
+                        new InstantCommand(()-> pipeline.getAction(drive,intakeClawSys, intakeV4bSys,extendoSys, outtakeV4bSys, outtakeClawSys, liftSys))
                 )
         );
     }

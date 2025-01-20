@@ -30,8 +30,8 @@ public class RightAltAuto extends AutoBaseOpMode{
     Action score3;
     Action park;
 
-    public static double pickupN = -58;
-    public static double dropOffN = -36;
+    public static double pickupN = -57.3;
+    public static double dropOffN = -36.8;
 
     @Override
     public void init() {
@@ -48,45 +48,45 @@ public class RightAltAuto extends AutoBaseOpMode{
         dropOff = drive.actionBuilder(new Pose2d(4, dropOffN, Math.toRadians(270)))
                 .strafeTo(new Vector2d(20, -36))
                 .splineToConstantHeading(new Vector2d(46.4, -8.9), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
+                .waitSeconds(0.1)
                 .splineToConstantHeading(new Vector2d(46.2, -49.5 ),Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
+                .waitSeconds(0.1)
                 .splineToConstantHeading(new Vector2d(50.31, -13.74), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
+                .waitSeconds(0.1)
                 .splineToConstantHeading(new Vector2d(58, -13.74), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
+                .waitSeconds(0.1)
                 .splineToConstantHeading(new Vector2d(58, -49.5), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
-                .splineToConstantHeading(new Vector2d(58.5, -13.74), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
-                .splineToConstantHeading(new Vector2d(60, -13.74), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
-                .splineToConstantHeading(new Vector2d(60, -49.5), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .waitSeconds(0.2)
-                .strafeToLinearHeading(new Vector2d(34.7, -58), Math.toRadians(90), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .waitSeconds(0.5)
+                //.splineToConstantHeading(new Vector2d(58.5, -13.74), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                //.waitSeconds(0.2)
+                //.splineToConstantHeading(new Vector2d(60, -13.74), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                //.waitSeconds(0.2)
+                //.splineToConstantHeading(new Vector2d(60, -49.5), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                //.waitSeconds(0.2)
+                .strafeToLinearHeading(new Vector2d(34.7, pickupN), Math.toRadians(90), drive.defaultVelConstraint, drive.defaultAccelConstraint)
                 .build();
 
         score1 = drive.actionBuilder(new Pose2d(34.7, pickupN, Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(6, dropOffN), Math.toRadians(270),drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .strafeToLinearHeading(new Vector2d(4, dropOffN), Math.toRadians(270),drive.defaultVelConstraint, drive.defaultAccelConstraint)
                 .build();
 
-        pickUp2 = drive.actionBuilder(new Pose2d(6, dropOffN, Math.toRadians(270)))
+        pickUp2 = drive.actionBuilder(new Pose2d(4, dropOffN, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(34.7, pickupN), Math.toRadians(90), drive.defaultVelConstraint, drive.defaultAccelConstraint)
                 .build();
 
         score2 = drive.actionBuilder(new Pose2d(34.7, pickupN, Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(8, dropOffN), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .strafeToLinearHeading(new Vector2d(6, dropOffN), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
                 .build();
 
-        pickUp3 = drive.actionBuilder(new Pose2d(8, dropOffN, Math.toRadians(270)))
+        pickUp3 = drive.actionBuilder(new Pose2d(6, dropOffN, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(34.7, pickupN), Math.toRadians(90), drive.defaultVelConstraint, drive.defaultAccelConstraint)
                 .build();
 
         score3 = drive.actionBuilder(new Pose2d(34.7, pickupN, Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(10, dropOffN), Math.toRadians(270), drive.maxVelConstraint, drive.maxAccelConstraint)
+                .strafeToLinearHeading(new Vector2d(8, dropOffN), Math.toRadians(270), drive.maxVelConstraint, drive.maxAccelConstraint)
                 .build();
 
-        park = drive.actionBuilder(new Pose2d(10, dropOffN, Math.toRadians(270)))
+        park = drive.actionBuilder(new Pose2d(8, dropOffN, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(24, -45), Math.toRadians(315), drive.defaultVelConstraint, drive.maxAccelConstraint)
                 .build();
 
@@ -118,17 +118,17 @@ public class RightAltAuto extends AutoBaseOpMode{
                         ),
                         //SCORE 1
                         outtakeV4bSys.specimen(),
-                        new WaitCommand(150),
+                        new WaitCommand(500),
                         outtakeClawSys.grab(),
                         new WaitCommand(150),
                         outtakeV4bSys.mid(),
                         new ParallelCommandGroup(
                                 new ActionCommand(score1),
                                 new SequentialCommandGroup(
-                                        liftSys.goTo(LiftSys.HIGH_RUNG),
-                                        outtakeV4bSys.away()
+                                        liftSys.goTo(LiftSys.HIGH_RUNG)
                                 )
                         ),
+                        outtakeV4bSys.away(),
                         //outtake v4b some shit
                         liftSys.goTo(LiftSys.HIGH_RUNG-400),
                         new WaitCommand(200),
@@ -142,7 +142,6 @@ public class RightAltAuto extends AutoBaseOpMode{
                                         outtakeV4bSys.specimen()
                                 )
                         ),
-
                         new WaitCommand(200),
                         outtakeClawSys.grab(),
                         new WaitCommand(200),

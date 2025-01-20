@@ -53,7 +53,9 @@ public class LiftSys extends SubsystemBase {
         bottem.motorEx.setCurrentAlert(10, CurrentUnit.AMPS);
     }
 
-    public Command goTo(int target) {return setTarget(target).andThen(new WaitUntilCommand(this::atTarget));}
+    public Command goTo(int target) {
+        return setTarget(target).andThen(new WaitUntilCommand(this::atTarget));
+    }
 
     public Command setTarget(int target) {return new InstantCommand(() -> {currentTarget = target;controller.setGoal(target);});}
 
@@ -113,6 +115,7 @@ public class LiftSys extends SubsystemBase {
     @Override
     public void periodic() {
         //TODO: Fix this bulk reads implementation
+
         if (!(top.motorEx.isOverCurrent() && bottem.motorEx.isOverCurrent()) && !hang) {
             if (touch.isPressed()) {
                 encoder.reset();

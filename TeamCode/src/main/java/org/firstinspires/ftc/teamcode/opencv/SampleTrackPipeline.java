@@ -10,9 +10,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.firstinspires.ftc.teamcode.opencv.eocvtest.SamplePipeline;
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
 import org.firstinspires.ftc.teamcode.roadrunner.PinpointDrive;
-import org.firstinspires.ftc.teamcode.subsystem.ExtendoSys;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeClawSys;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeV4bSys;
+import org.firstinspires.ftc.teamcode.subsystem.*;
 import org.firstinspires.ftc.teamcode.util.ActionCommand;
 import org.firstinspires.ftc.teamcode.util.filters.LowPassFilter;
 import org.firstinspires.ftc.teamcode.util.filters.MovingAverageFilter;
@@ -25,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.firstinspires.ftc.teamcode.subsystem.IntakeV4bSys.POS_DOWN;
+import static org.firstinspires.ftc.teamcode.subsystem.OuttakeV4BSys.ARM_HOME;
+import static org.firstinspires.ftc.teamcode.subsystem.OuttakeV4BSys.PITCH_HOME;
 
 @Config
 public class SampleTrackPipeline extends OpenCvPipeline {
@@ -32,6 +32,8 @@ public class SampleTrackPipeline extends OpenCvPipeline {
     public final BaseOpMode.TEAM team;
     public final MovingAverageFilter angleFilter = new MovingAverageFilter(70);
 
+    public static double xOffset = 1;
+    public static double yOffset = 1.5;
     public static boolean drawOnScreen = false;
     public static double sizeThreshold = 3000;
     Mat ycrcbMat = new Mat();
@@ -231,7 +233,6 @@ public class SampleTrackPipeline extends OpenCvPipeline {
     private GoToStone calculateMovementPose(Pose2d currentPose) {
         double xCoverageInches = 14.80314960629921;
         double yCoverageInches = 10.7440945;
-        double cameraOffsetInches = 1;
 
         if (clientStoneList.isEmpty()) {
             return null;
@@ -259,8 +260,8 @@ public class SampleTrackPipeline extends OpenCvPipeline {
         double deltaY = closestStone.center.y - frameCenter.y;
 
         // Convert pixel offset to real-world offset (in inches)
-        double realWorldX = (deltaX / frameSize.width) * xCoverageInches - 2;
-        double realWorldY = (deltaY / frameSize.height) * yCoverageInches - cameraOffsetInches;
+        double realWorldX = (deltaX / frameSize.width) * xCoverageInches - xOffset;
+        double realWorldY = (deltaY / frameSize.height) * yCoverageInches - yOffset;
 
         // Log the results
         Log.i("goTo X", String.valueOf(realWorldX));
@@ -274,28 +275,56 @@ public class SampleTrackPipeline extends OpenCvPipeline {
 
 
 
-    public void getAction(PinpointDrive drive, IntakeClawSys intakeClaw, IntakeV4bSys intakeV4bSys, ExtendoSys extendoSys) {
+    public void getAction(PinpointDrive drive, IntakeClawSys intakeClaw, IntakeV4bSys intakeV4bSys, ExtendoSys extendoSys, OuttakeV4BSys outtakeV4BSys, OuttakeClawSys outtakeClawSys, LiftSys liftSys) {
         GoToStone sample = calculateMovementPose(drive.pose);
         if (sample != null) {
             Vector2d samplePosition = sample.position;
             Action goTo = drive.actionBuilder(drive.pose).strafeTo(samplePosition).build();
+            Action score = drive.actionBuilder(new Pose2d(samplePosition, Math.toRadians(180)))
+                    .strafeToSplineHeading(new Vector2d(52, 55.5), Math.toRadians(225))
+                    .build();
             double angle = Math.round(Precision.calculateWeightedValue(IntakeClawSys.YAW_LEFT, IntakeClawSys.YAW_RIGHT, (sample.angle % 179) / 180) * 5) / 5.0;
             schedule(
                     new SequentialCommandGroup(
-
                             new ParallelCommandGroup(
                                     new ActionCommand(goTo),
                                     intakeClaw.rotateYaw(angle)
                             ),
                             new SequentialCommandGroup(
                                     new WaitCommand(200),
+                                    outtakeClawSys.release(),
                                     intakeV4bSys.goToPos(POS_DOWN - 0.03),
                                     new WaitCommand(200),
                                     intakeClaw.pinch(),
                                     new WaitCommand(200),
                                     intakeV4bSys.dropOff(),
                                     extendoSys.goTo(ExtendoSys.EXTENDO_HOME)
-                            )
+                            ),
+                            new ParallelCommandGroup(
+                                    new ActionCommand(score),
+                                    new SequentialCommandGroup(
+                                            new WaitCommand(400),
+                                            outtakeV4BSys.setPitch(PITCH_HOME),
+                                            new WaitCommand(100),
+                                            outtakeV4BSys.setArm(ARM_HOME),
+                                            new WaitCommand(300),
+                                            outtakeClawSys.grab(),
+                                            new WaitCommand(150),
+                                            intakeClaw.release(),
+                                            new WaitCommand(50),
+                                            liftSys.goTo(LiftSys.HIGH_BUCKET)
+                                    )
+                            ),
+                            new SequentialCommandGroup(
+                                    outtakeV4BSys.setPitch(1),
+                                    outtakeV4BSys.setArm(0.3),
+                                    new WaitCommand(300),
+                                    outtakeClawSys.release(),
+                                    new WaitCommand(400),
+                                    outtakeV4BSys.mid()
+                            ),
+                            new WaitCommand(150),
+                            liftSys.goTo(LiftSys.NONE)
                     )
             );
         }
