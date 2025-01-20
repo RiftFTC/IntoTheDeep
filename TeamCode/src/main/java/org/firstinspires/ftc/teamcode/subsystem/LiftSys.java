@@ -49,8 +49,8 @@ public class LiftSys extends SubsystemBase {
         this.touch = touch;
         encoder = bottem.encoder;
         this.doubleSupplier = doubleSupplier;
-        top.motorEx.setCurrentAlert(10, CurrentUnit.AMPS);
-        bottem.motorEx.setCurrentAlert(10, CurrentUnit.AMPS);
+        top.motorEx.setCurrentAlert(7, CurrentUnit.AMPS);
+        bottem.motorEx.setCurrentAlert(7, CurrentUnit.AMPS);
     }
 
     public Command goTo(int target) {
