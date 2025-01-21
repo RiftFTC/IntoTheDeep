@@ -8,11 +8,11 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 @Config
 public class OuttakeClawSys extends SubsystemBase {
 
-    public static double GRAB = 0.5;
-    public static double SPECIMAN_GRAB = 0.3;
-    public static double SUPER_GRAB=0.3;
-    public static double RELEASE = 0.0;
-    public static double SUPER_RELEASE = 0;
+    public static double GRAB = 0.8;
+    public static double SPECIMAN_GRAB = 0.8;
+    public static double SUPER_GRAB=0.8;
+    public static double RELEASE = 0.45;
+    public static double SUPER_RELEASE = 0.45;
     private final SimpleServo claw;
 
 

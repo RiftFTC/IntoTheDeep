@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.roadrunner.PinpointDrive;
 import org.firstinspires.ftc.teamcode.subsystem.ExtendoSys;
+import org.firstinspires.ftc.teamcode.subsystem.IntakeClawSys;
 import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
 import org.firstinspires.ftc.teamcode.util.ActionCommand;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -25,7 +26,7 @@ import static org.firstinspires.ftc.teamcode.subsystem.OuttakeV4BSys.PITCH_HOME;
 @Autonomous(name="Left Auto", group="Autonomous")
 public class LeftAuto extends AutoBaseOpMode{
 
-    public static int traj2A = 272;
+    public static int traj2A = 271;
     TrajectoryActionBuilder preloadDropOffTraj;
     TrajectoryActionBuilder pickUp1Traj;
     TrajectoryActionBuilder dropOff1Traj;
@@ -49,7 +50,7 @@ public class LeftAuto extends AutoBaseOpMode{
         super.init();
         drive = new PinpointDrive(hardwareMap, new Pose2d(38.6, 64.5, Math.toRadians(180)));
         telemetry.addData("Initialization", true);
-        oClaw.setPosition(0.5);
+        oClaw.setPosition(0.7);
 
         preloadDropOffTraj = drive.actionBuilder(
                         new Pose2d(38.6, 64.5, Math.toRadians(180)))
@@ -57,26 +58,26 @@ public class LeftAuto extends AutoBaseOpMode{
 
         pickUp1Traj = drive.actionBuilder(
                         new Pose2d(54, 53.5, Math.toRadians(225)))
-                .strafeToSplineHeading(new Vector2d(51.6, 49.5), Math.toRadians(260));
+                .strafeToSplineHeading(new Vector2d(52, 49.5), Math.toRadians(260));
 
         dropOff1Traj = drive.actionBuilder(
-                        new Pose2d(51.6, 49.5, Math.toRadians(260)))
+                        new Pose2d(52, 49.5, Math.toRadians(260)))
                 .strafeToSplineHeading(new Vector2d(54, 53.5), Math.toRadians(225));
 
         pickUp2Traj = drive.actionBuilder(
                         new Pose2d(54, 53.5, Math.toRadians(225)))
-                .strafeToSplineHeading(new Vector2d(55.5, 50.5), Math.toRadians(traj2A));
+                .strafeToSplineHeading(new Vector2d(56.2, 50.5), Math.toRadians(traj2A));
 
         dropOff2Traj = drive.actionBuilder(
-                        new Pose2d(57, 50.5, Math.toRadians(traj2A)))
+                        new Pose2d(56.2, 50.5, Math.toRadians(traj2A)))
                 .strafeToSplineHeading(new Vector2d(54, 53.5), Math.toRadians(225));
 
         pickUp3Traj = drive.actionBuilder(
                         new Pose2d(54, 53.5, Math.toRadians(225)))
-                .strafeToSplineHeading(new Vector2d(60.3, 43.9), Math.toRadians(285));
+                .strafeToSplineHeading(new Vector2d(60.3, 43.9), Math.toRadians(289));
 
         dropOff3Traj = drive.actionBuilder(
-                        new Pose2d(60.3, 43.9, Math.toRadians(285)))
+                        new Pose2d(60.3, 43.9, Math.toRadians(289)))
                 .strafeToSplineHeading(new Vector2d(54, 53.5), Math.toRadians(225));
 
         parkTraj = drive.actionBuilder(
@@ -115,7 +116,7 @@ public class LeftAuto extends AutoBaseOpMode{
                                 ),
                                 new WaitCommand(200),
                                 new SequentialCommandGroup(
-                                        extendoSys.goTo(0.34),
+                                        extendoSys.goTo(0.36),
                                         intakeV4bSys.intake()
                                 ),
                                 intakeClawSys.release(),
@@ -139,9 +140,9 @@ public class LeftAuto extends AutoBaseOpMode{
                                                 outtakeV4bSys.setArm(ARM_HOME),
                                                 new WaitCommand(200),
                                                 outtakeClawSys.grab(),
-                                                new WaitCommand(150),
+                                                new WaitCommand(400),
                                                 intakeClawSys.release(),
-                                                new WaitCommand(50),
+                                                new WaitCommand(150),
                                                 liftSys.goTo(LiftSys.HIGH_BUCKET)
                                         )
                                 )
@@ -157,7 +158,7 @@ public class LeftAuto extends AutoBaseOpMode{
                         ),
                         new WaitCommand(200),
                         new SequentialCommandGroup(
-                                extendoSys.goTo(0.35),
+                                extendoSys.goTo(0.38),
                                 intakeV4bSys.intake(),
                                 new SequentialCommandGroup(
                                         intakeClawSys.intake(),
@@ -170,7 +171,7 @@ public class LeftAuto extends AutoBaseOpMode{
                         new SequentialCommandGroup(
                                 new WaitCommand(300),
                                 intakeV4bSys.goToPos(POS_DOWN - 0.03),
-                                new WaitCommand(100),
+                                new WaitCommand(300),
                                 intakeClawSys.pinch(),
                                 new WaitCommand(300),
                                 intakeClawSys.dropoff(),
@@ -183,13 +184,13 @@ public class LeftAuto extends AutoBaseOpMode{
                                 new ActionCommand(dropOff2),
                                 new SequentialCommandGroup(
                                         outtakeV4bSys.setPitch(PITCH_HOME),
-                                        new WaitCommand(100),
+                                        new WaitCommand(300),
                                         outtakeV4bSys.setArm(ARM_HOME),
                                         new WaitCommand(300),
                                         outtakeClawSys.grab(),
-                                        new WaitCommand(150),
+                                        new WaitCommand(400),
                                         intakeClawSys.release(),
-                                        new WaitCommand(50),
+                                        new WaitCommand(200),
                                         liftSys.goTo(LiftSys.HIGH_BUCKET)
                                 )
                         ),
@@ -203,18 +204,17 @@ public class LeftAuto extends AutoBaseOpMode{
                         ),
                         new ParallelCommandGroup(
                                 liftSys.goTo(LiftSys.NONE),
-                                new ActionCommand(pickUp3),
-                                new InstantCommand(pipeline::enableTracking)
+                                new ActionCommand(pickUp3)
                         ),
                         new WaitCommand(300),
                         new SequentialCommandGroup(
                                 extendoSys.goTo(0.29),
                                 intakeV4bSys.intake(),
                                 new SequentialCommandGroup(
-                                        intakeClawSys.release()
+                                        intakeClawSys.release(),
+                                        intakeClawSys.rotateYaw(0.8)
                                 ),
-                                new InstantCommand(pipeline::disableTracking),
-                                new WaitCommand(400),
+                                new WaitCommand(800),
                                 intakeV4bSys.goToPos(POS_DOWN - 0.03),
                                 new WaitCommand(100),
                                 intakeClawSys.pinch(),
@@ -232,9 +232,9 @@ public class LeftAuto extends AutoBaseOpMode{
                                         outtakeV4bSys.setArm(ARM_HOME),
                                         new WaitCommand(200),
                                         outtakeClawSys.grab(),
-                                        new WaitCommand(200),
+                                        new WaitCommand(400),
                                         intakeClawSys.release(),
-                                        new WaitCommand(50),
+                                        new WaitCommand(200),
                                         liftSys.goTo(LiftSys.HIGH_BUCKET)
                                 )
                         ),

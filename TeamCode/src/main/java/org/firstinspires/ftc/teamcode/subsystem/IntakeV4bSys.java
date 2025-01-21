@@ -16,7 +16,7 @@ public class IntakeV4bSys extends SubsystemBase {
     public static double POS_SPECIMEN_OUT = 0.65;
     public static double POS_SPECIMEN_IN = 0.66;
 
-    public static double ROLL_IN = 0.54;
+    public static double ROLL_IN = 0.5;
     public static double ROLL_MID = 0.8; //0.76
     public static double ROLL_OUT = 0.76;
 

@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.util;
 
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.Subsystem;
 import xyz.devmello.voyager.Voyager;
+import xyz.devmello.voyager.geometry.Angle;
 import xyz.devmello.voyager.geometry.PointXYZ;
 import xyz.devmello.voyager.geometry.Translation;
 import java.util.Collections;
@@ -35,6 +38,10 @@ public class VoyagerCommand implements Command {
                 PointXYZ nextPoint = points.get(0);
                 voyager.goTo(nextPoint);
                 points.remove(nextPoint);
+                if (points.size() == 1) {
+                    voyager.setAngleTolerance(Angle.fromDeg(3));
+                    voyager.setTolerance(.7);
+                }
             } else {
                 // stop the robot
                 voyager.getDrive().setTranslation(Translation.zero());

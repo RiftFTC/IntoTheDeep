@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.roadrunner.PinpointDrive;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Config
-@TeleOp(name="Right ALT Auto w/ Voyager")
+@Autonomous(name="Right ALT Auto w/ Voyager")
 public class RightAltAutoVoyager extends AutoBaseOpMode{
     PathfinderRobot pathfinderRobot = new PathfinderRobot();
     Action preLoad;
@@ -38,14 +39,14 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
     Action park;
 
     private final List<PointXYZ> dropOffVoyager = new ArrayList<PointXYZ>() {{
-        add(new PointXYZ(0, -15, Angle.fromDeg(0)));
-        add(new PointXYZ(30, -15, Angle.fromDeg(0)));
-        add(new PointXYZ(30, -35, Angle.fromDeg(0)));
-        add(new PointXYZ(-40,-35, Angle.fromDeg(0)));
-        add(new PointXYZ(30,-35, Angle.fromDeg(0)));
-        add(new PointXYZ(30,-40, Angle.fromDeg(0)));
-        add(new PointXYZ(-40,-40, Angle.fromDeg(0)));
-        add(new PointXYZ(-50,-30, Angle.fromDeg(180)));
+        add(new PointXYZ(34, -33, Angle.fromDeg(90)));
+        add(new PointXYZ(34, -10, Angle.fromDeg(90)));
+        add(new PointXYZ(50, -10, Angle.fromDeg(90))); //-47
+        add(new PointXYZ(50, -47, Angle.fromDeg(90)));
+        add(new PointXYZ(50, -10, Angle.fromDeg(90)));
+        add(new PointXYZ(57,-10, Angle.fromDeg(90)));
+        add(new PointXYZ(57,-47, Angle.fromDeg(90)));
+        add(new PointXYZ(34.7, -57.3, Angle.fromDeg(90)));
     }};
 
     public static double pickupN = -57.3;
@@ -62,7 +63,7 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
         drive = new PinpointDrive(hardwareMap, new Pose2d(16.7, -62.2, Math.toRadians(270)));
         telemetry.addData("Initialization", true);
         telemetry.update();
-        oClaw.setPosition(0.3);
+        oClaw.setPosition(0.8);
 
         preLoad = drive.actionBuilder(new Pose2d(16.7, -62.2, Math.toRadians(270)))
                 .strafeTo(new Vector2d(4, dropOffN), drive.defaultVelConstraint, drive.defaultAccelConstraint)
@@ -202,8 +203,10 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
 
     @Override
     public void loop() {
+        pathfinderRobot.voyager().getOdometry().tick();
         drive.updatePoseEstimate();
         liftSys.periodic();
+        telemetry.addData("Voyager", pathfinderRobot.voyager().getOdometry().getPosition().toString());
         super.loop();
         Pose2d poseEstimate = drive.odometry.getPositionRR();
         Robot.startPose = poseEstimate;

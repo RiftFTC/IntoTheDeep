@@ -21,6 +21,7 @@ import static org.firstinspires.ftc.teamcode.subsystem.IntakeV4bSys.ROLL_IN_SPEC
 @Config
 @TeleOp(name="Right ALT Auto")
 public class RightAltAuto extends AutoBaseOpMode{
+    public static double clawPos = 0;
     Action preLoad;
     Action dropOff;
     Action score1;
@@ -39,7 +40,7 @@ public class RightAltAuto extends AutoBaseOpMode{
         drive = new PinpointDrive(hardwareMap, new Pose2d(16.7, -62.2, Math.toRadians(270)));
         telemetry.addData("Initialization", true);
         telemetry.update();
-        oClaw.setPosition(0.3);
+        oClaw.setPosition(clawPos);
 
         preLoad = drive.actionBuilder(new Pose2d(16.7, -62.2, Math.toRadians(270)))
                 .strafeTo(new Vector2d(4, dropOffN), drive.defaultVelConstraint, drive.defaultAccelConstraint)

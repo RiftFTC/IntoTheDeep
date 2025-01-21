@@ -16,7 +16,7 @@ import java.util.function.DoubleSupplier;
 public class IntakeClawSys extends SubsystemBase {
 
     public static double MID = 0.36;
-    public static double PINCH = 0.67;
+    public static double PINCH = 0.76;
     public static double SUPER_PINCH = 0.69;
 
     public static double YAW_MID = 0.53;

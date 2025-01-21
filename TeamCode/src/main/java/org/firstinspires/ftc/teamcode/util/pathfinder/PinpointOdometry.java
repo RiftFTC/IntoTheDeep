@@ -44,6 +44,12 @@ public class PinpointOdometry extends AbstractOdometry {
         return new PointXYZ(pose.position.x, pose.position.y, Angle.fromRad(pose.heading.toDouble()));
     }
 
+    @Override
+    public void setOffset(PointXYZ pointXYZ) {
+        Pose2D pose2D = new Pose2D(DistanceUnit.INCH, pointXYZ.x(), pointXYZ.y(), AngleUnit.RADIANS, pointXYZ.z().rad());
+        driver.setPosition(pose2D);
+    }
+
     public Pose2D getPos() {
         return driver.getPosition();
     }

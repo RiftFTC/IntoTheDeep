@@ -6,13 +6,10 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.command.*;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.firstinspires.ftc.teamcode.opencv.eocvtest.SamplePipeline;
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
 import org.firstinspires.ftc.teamcode.roadrunner.PinpointDrive;
 import org.firstinspires.ftc.teamcode.subsystem.*;
 import org.firstinspires.ftc.teamcode.util.ActionCommand;
-import org.firstinspires.ftc.teamcode.util.filters.LowPassFilter;
 import org.firstinspires.ftc.teamcode.util.filters.MovingAverageFilter;
 import org.firstinspires.ftc.teamcode.util.math.Precision;
 import org.opencv.core.*;
@@ -20,7 +17,6 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import static org.firstinspires.ftc.teamcode.subsystem.IntakeV4bSys.POS_DOWN;
 import static org.firstinspires.ftc.teamcode.subsystem.OuttakeV4BSys.ARM_HOME;
@@ -32,8 +28,8 @@ public class SampleTrackPipeline extends OpenCvPipeline {
     public final BaseOpMode.TEAM team;
     public final MovingAverageFilter angleFilter = new MovingAverageFilter(70);
 
-    public static double xOffset = 1;
-    public static double yOffset = 1.5;
+    public static double xOffset = 4;
+    public static double yOffset = 3;
     public static boolean drawOnScreen = false;
     public static double sizeThreshold = 3000;
     Mat ycrcbMat = new Mat();
@@ -268,7 +264,7 @@ public class SampleTrackPipeline extends OpenCvPipeline {
         Log.i("goTo Y", String.valueOf(realWorldY));
 
         return new GoToStone(
-                new Vector2d(currentPose.position.x + realWorldX, currentPose.position.y + realWorldY),
+                new Vector2d(currentPose.position.x + realWorldY, currentPose.position.y + realWorldX),
                 closestStone.angle
         );
     }
