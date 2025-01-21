@@ -18,6 +18,9 @@ public class OuttakeV4BSys extends SubsystemBase {
     public static double ARM_HOME_SPECIMEN = 0.18;
     public static double PITCH_HOME_SPECIMEN = 0.9;
 
+    public static double ARM_TOUCH = 0.35;
+    public static double PITCH_TOUCH = 0.6;
+
     SimpleServo pitch, arm;
     public OuttakeV4BSys(SimpleServo pitch, SimpleServo arm) {
         this.pitch = pitch;
@@ -59,5 +62,9 @@ public class OuttakeV4BSys extends SubsystemBase {
 
     public Command away() {
         return new InstantCommand(() -> move(ARM_AWAY, PITCH_AWAY), this);
+    }
+
+    public Command touch() {
+        return new InstantCommand(() -> move(ARM_TOUCH, PITCH_TOUCH), this);
     }
 }

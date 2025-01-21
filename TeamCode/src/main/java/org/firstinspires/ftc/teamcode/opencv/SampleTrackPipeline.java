@@ -142,7 +142,7 @@ public class SampleTrackPipeline extends OpenCvPipeline {
         Point[] points = contour.toArray();
         MatOfPoint2f contour2f = new MatOfPoint2f(points);
         RotatedRect rotatedRectFitToContour = Imgproc.minAreaRect(contour2f);
-        if (rotatedRectFitToContour.size.width * rotatedRectFitToContour.size.height > sizeThreshold) {
+        if (rotatedRectFitToContour.size.width * rotatedRectFitToContour.size.height > sizeThreshold && rotatedRectFitToContour.size.width * rotatedRectFitToContour.size.height < 12000) {
             //if (drawOnScreen) {
             drawRotatedRect(rotatedRectFitToContour, input, color);
             drawRotatedRect(rotatedRectFitToContour, contoursOnPlainImageMat, color);
@@ -294,6 +294,7 @@ public class SampleTrackPipeline extends OpenCvPipeline {
                                     intakeClaw.pinch(),
                                     new WaitCommand(200),
                                     intakeV4bSys.dropOff(),
+                                    intakeClaw.dropoff(),
                                     extendoSys.goTo(ExtendoSys.EXTENDO_HOME)
                             ),
                             new ParallelCommandGroup(
@@ -321,6 +322,23 @@ public class SampleTrackPipeline extends OpenCvPipeline {
                             ),
                             new WaitCommand(150),
                             liftSys.goTo(LiftSys.NONE)
+                    )
+            );
+        } else {
+            Action park = drive.actionBuilder(drive.pose)
+                    .strafeToLinearHeading(new Vector2d(23, 7), Math.toRadians(0))
+                    .build();
+            schedule(
+                    new SequentialCommandGroup(
+                            extendoSys.goTo(ExtendoSys.EXTENDO_HOME),
+                            intakeV4bSys.dropOff(),
+                            intakeClaw.dropoff(),
+                            new WaitCommand(200),
+                            new ParallelCommandGroup(
+                                    new ActionCommand(park),
+                                    liftSys.goTo(LiftSys.HIGH_RUNG - 400)
+                            ),
+                            outtakeV4BSys.touch()
                     )
             );
         }

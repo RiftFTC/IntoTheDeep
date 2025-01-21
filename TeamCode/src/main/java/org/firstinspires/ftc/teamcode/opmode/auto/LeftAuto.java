@@ -82,7 +82,8 @@ public class LeftAuto extends AutoBaseOpMode{
 
         parkTraj = drive.actionBuilder(
                         new Pose2d(54, 53.5, Math.toRadians(225)))
-                .strafeToSplineHeading(new Vector2d(29, 5), Math.toRadians(180));
+                .strafeToSplineHeading(new Vector2d(29, 7), Math.toRadians(180)); //23,7
+
 
         preloadDropOff = preloadDropOffTraj.build();
         pickUp1 = pickUp1Traj.build();
