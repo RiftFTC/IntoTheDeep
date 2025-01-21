@@ -25,7 +25,7 @@ import static org.firstinspires.ftc.teamcode.subsystem.OuttakeV4BSys.PITCH_HOME;
 @Config
 public class SampleTrackPipeline extends OpenCvPipeline {
 
-    public final BaseOpMode.TEAM team;
+    public BaseOpMode.TEAM team;
     public final MovingAverageFilter angleFilter = new MovingAverageFilter(70);
 
     public static double xOffset = 4;
@@ -354,5 +354,9 @@ public class SampleTrackPipeline extends OpenCvPipeline {
 
     public void disableTracking() {
         IntakeClawSys.TRACK = false;
+    }
+
+    public void setTeam(BaseOpMode.TEAM team) {
+        this.team = team;
     }
 }
