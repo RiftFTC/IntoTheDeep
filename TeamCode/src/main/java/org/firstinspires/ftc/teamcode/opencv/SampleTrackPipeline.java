@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.util.math.Precision;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
+import xyz.devmello.voyager.time.ElapsedTimer;
 
 import java.util.ArrayList;
 
@@ -270,16 +271,12 @@ public class SampleTrackPipeline extends OpenCvPipeline {
     }
 
 
-    //TODO: Add a time based cap so we don't over extend.
-    //Issue URL: https://github.com/RiftFTC/IntoTheDeep/issues/5
-    public void getAction(PinpointDrive drive, IntakeClawSys intakeClaw, IntakeV4bSys intakeV4bSys, ExtendoSys extendoSys, OuttakeV4BSys outtakeV4BSys, OuttakeClawSys outtakeClawSys, LiftSys liftSys) {
+    public void getAction(PinpointDrive drive, IntakeClawSys intakeClaw, IntakeV4bSys intakeV4bSys, ExtendoSys extendoSys, OuttakeV4BSys outtakeV4BSys, OuttakeClawSys outtakeClawSys, LiftSys liftSys, ElapsedTimer elapsedTimer) {
         GoToStone sample = calculateMovementPose(drive.pose);
         if (sample != null) {
             Vector2d samplePosition = sample.position;
             Action goTo = drive.actionBuilder(drive.pose).strafeTo(samplePosition).build();
-            Action score = drive.actionBuilder(new Pose2d(samplePosition, Math.toRadians(180)))
-                    .strafeToSplineHeading(new Vector2d(52, 55.5), Math.toRadians(225))
-                    .build();
+
             double angle = Math.round(Precision.calculateWeightedValue(IntakeClawSys.YAW_LEFT, IntakeClawSys.YAW_RIGHT, (sample.angle % 179) / 180) * 5) / 5.0;
             schedule(
                     new SequentialCommandGroup(
@@ -298,31 +295,7 @@ public class SampleTrackPipeline extends OpenCvPipeline {
                                     intakeClaw.dropoff(),
                                     extendoSys.goTo(ExtendoSys.EXTENDO_HOME)
                             ),
-                            new ParallelCommandGroup(
-                                    new ActionCommand(score),
-                                    new SequentialCommandGroup(
-                                            new WaitCommand(400),
-                                            outtakeV4BSys.setPitch(PITCH_HOME),
-                                            new WaitCommand(100),
-                                            outtakeV4BSys.setArm(ARM_HOME),
-                                            new WaitCommand(300),
-                                            outtakeClawSys.grab(),
-                                            new WaitCommand(150),
-                                            intakeClaw.release(),
-                                            new WaitCommand(50),
-                                            liftSys.goTo(LiftSys.HIGH_BUCKET)
-                                    )
-                            ),
-                            new SequentialCommandGroup(
-                                    outtakeV4BSys.setPitch(1),
-                                    outtakeV4BSys.setArm(0.3),
-                                    new WaitCommand(300),
-                                    outtakeClawSys.release(),
-                                    new WaitCommand(400),
-                                    outtakeV4BSys.mid()
-                            ),
-                            new WaitCommand(150),
-                            liftSys.goTo(LiftSys.NONE)
+                            parkOrScore(drive, intakeClaw, intakeV4bSys, extendoSys, outtakeV4BSys, outtakeClawSys, liftSys, elapsedTimer, samplePosition)
                     )
             );
         } else {
@@ -341,6 +314,58 @@ public class SampleTrackPipeline extends OpenCvPipeline {
                             ),
                             outtakeV4BSys.touch()
                     )
+            );
+        }
+    }
+
+    private Command parkOrScore(PinpointDrive drive, IntakeClawSys intakeClaw, IntakeV4bSys intakeV4bSys, ExtendoSys extendoSys, OuttakeV4BSys outtakeV4BSys, OuttakeClawSys outtakeClawSys, LiftSys liftSys, ElapsedTimer elapsedTimer, Vector2d samplePosition) {
+        Action score = drive.actionBuilder(new Pose2d(samplePosition, Math.toRadians(180)))
+                .strafeToSplineHeading(new Vector2d(52, 55.5), Math.toRadians(225))
+                .build();
+
+        Action park = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(23, 7), Math.toRadians(0))
+                .build();
+
+        if (elapsedTimer.elapsedSeconds() < 27) {
+            return new SequentialCommandGroup(
+                    new ParallelCommandGroup(
+                            new ActionCommand(score),
+                            new SequentialCommandGroup(
+                                    new WaitCommand(400),
+                                    outtakeV4BSys.setPitch(PITCH_HOME),
+                                    new WaitCommand(100),
+                                    outtakeV4BSys.setArm(ARM_HOME),
+                                    new WaitCommand(300),
+                                    outtakeClawSys.grab(),
+                                    new WaitCommand(150),
+                                    intakeClaw.release(),
+                                    new WaitCommand(50),
+                                    liftSys.goTo(LiftSys.HIGH_BUCKET)
+                            )
+                    ),
+                    new SequentialCommandGroup(
+                            outtakeV4BSys.setPitch(1),
+                            outtakeV4BSys.setArm(0.3),
+                            new WaitCommand(300),
+                            outtakeClawSys.release(),
+                            new WaitCommand(400),
+                            outtakeV4BSys.mid()
+                    ),
+                    new WaitCommand(150),
+                    liftSys.goTo(LiftSys.NONE)
+            );
+        } else {
+            return new SequentialCommandGroup(
+                    extendoSys.goTo(ExtendoSys.EXTENDO_HOME),
+                    intakeV4bSys.dropOff(),
+                    intakeClaw.dropoff(),
+                    new WaitCommand(200),
+                    new ParallelCommandGroup(
+                            new ActionCommand(park),
+                            liftSys.goTo(LiftSys.HIGH_RUNG - 400)
+                    ),
+                    outtakeV4BSys.touch()
             );
         }
     }

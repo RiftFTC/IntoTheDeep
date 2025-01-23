@@ -255,7 +255,7 @@ public class LeftAuto extends AutoBaseOpMode{
                         intakeV4bSys.goToPos(0.6),
                         intakeV4bSys.goToRoll(0.8),
                         new WaitCommand(400),
-                        new InstantCommand(()-> pipeline.getAction(drive,intakeClawSys, intakeV4bSys,extendoSys, outtakeV4bSys, outtakeClawSys, liftSys))
+                        new InstantCommand(()-> pipeline.getAction(drive,intakeClawSys, intakeV4bSys,extendoSys, outtakeV4bSys, outtakeClawSys, liftSys, elapsedTimer))
                 )
         );
     }

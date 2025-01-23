@@ -29,6 +29,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import xyz.devmello.voyager.time.ElapsedTimer;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.arcrobotics.ftclib.gamepad.GamepadKeys.Trigger.LEFT_TRIGGER;
 import static com.arcrobotics.ftclib.gamepad.GamepadKeys.Trigger.RIGHT_TRIGGER;
@@ -90,7 +91,7 @@ public class AutoBaseOpMode extends OpMode {
             });
         } catch (Exception e) {
             Log.e("OpenCv", "Error opening camera");
-            Log.e("OpenCv", e.getMessage());
+            Log.e("OpenCv", Objects.requireNonNull(e.getMessage()));
         }
     }
 
@@ -163,6 +164,7 @@ public class AutoBaseOpMode extends OpMode {
     @Override
     public void stop() {
         super.stop();
+        elapsedTimer.toString() ;
         IntakeClawSys.AUTO = false;
         Robot.startPose = drive.pose;
     }
