@@ -26,6 +26,7 @@ import org.firstinspires.ftc.teamcode.util.GoBildaPinpointDriver;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.PipelineRecordingParameters;
+import xyz.devmello.voyager.robot.Drive;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +40,6 @@ public class BaseOpMode extends CommandOpMode {
     private double loopTime = 0;
     protected SimpleServo ipr, iPitch, extL, extR, iClaw, iYaw, oClaw, oPitch, oPos, transmission;
     protected TouchSensor touch;
-    protected PinpointDrive pinpointDrive;
     protected DriveSys driveSys;
     protected ExtendoSys extendoSys;
     protected LiftSys liftSys;
@@ -64,7 +64,8 @@ public class BaseOpMode extends CommandOpMode {
 
     @Override
     public void initialize() {
-        gamepadServer = new GamepadServer(gamepad1);
+        //gamepadServer = new GamepadServer(gamepad1);
+
         setTeam();
         gamepadEx1 = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
@@ -101,16 +102,15 @@ public class BaseOpMode extends CommandOpMode {
     }
 
     public void initSys() {
-        pinpointDrive = new PinpointDrive(hardwareMap, Robot.startPose);
-        driveSys = new DriveSys(fl, fr, bl ,br);
+        driveSys = new DriveSys(hardwareMap);
         extendoSys = new ExtendoSys(extL,extR);
-        liftSys = new LiftSys(lil, lir, gamepadEx2::getRightY, touch);
+        liftSys = new LiftSys(lil, lir, gamepadEx1::getRightY, touch);
         intakeV4bSys = new IntakeV4bSys(ipr, iPitch);
         intakeClawSys = new IntakeClawSys(iClaw, iYaw, ()-> gamepadEx1.getTrigger(LEFT_TRIGGER), () -> gamepadEx1.getTrigger(RIGHT_TRIGGER));
         outtakeClawSys = new OuttakeClawSys(oClaw);
         outtakeV4bSys = new OuttakeV4BSys(oPitch, oPos);
         timeSys = new TimeSys();
-        transmissionSys = new TransmissionSys(transmission, hang, lir.encoder);
+        transmissionSys = new TransmissionSys(transmission, hang, liftSys);
     }
 
     @SuppressLint("SdCardPath")
@@ -142,7 +142,7 @@ public class BaseOpMode extends CommandOpMode {
     @Override
     public void run() {
         super.run();
-        pinpointDrive.updatePoseEstimate();
+        if (!DriveSys.AUTOMATION) driveSys.drive.updatePoseEstimate();
 //        activityManager.getMemoryInfo(memoryInfo);
 //        tad("Available Memory", (float) memoryInfo.availMem / (float) memoryInfo.totalMem * 100.0F);
         tad("ANGLE", pipeline.getAngle());

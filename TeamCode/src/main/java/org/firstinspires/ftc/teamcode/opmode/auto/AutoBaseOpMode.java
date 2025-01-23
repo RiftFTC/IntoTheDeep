@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opencv.SampleTrackPipeline;
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
 import org.firstinspires.ftc.teamcode.roadrunner.PinpointDrive;
@@ -161,6 +162,7 @@ public class AutoBaseOpMode extends OpMode {
     public void stop() {
         super.stop();
         IntakeClawSys.AUTO = false;
+        Robot.startPose = drive.pose;
     }
 
 }

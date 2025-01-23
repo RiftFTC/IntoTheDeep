@@ -41,10 +41,10 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
     private final List<PointXYZ> dropOffVoyager = new ArrayList<PointXYZ>() {{
         add(new PointXYZ(34, -33, Angle.fromDeg(90)));
         add(new PointXYZ(34, -10, Angle.fromDeg(90)));
-        add(new PointXYZ(50, -10, Angle.fromDeg(90))); //-47
-        add(new PointXYZ(50, -47, Angle.fromDeg(90)));
         add(new PointXYZ(50, -10, Angle.fromDeg(90)));
-        add(new PointXYZ(57,-10, Angle.fromDeg(90)));
+        add(new PointXYZ(50, -47, Angle.fromDeg(90)));
+        add(new PointXYZ(50, -6, Angle.fromDeg(90)));
+        add(new PointXYZ(57,-6, Angle.fromDeg(90)));
         add(new PointXYZ(57,-47, Angle.fromDeg(90)));
         add(new PointXYZ(34.7, -57.3, Angle.fromDeg(90)));
     }};
@@ -59,7 +59,7 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
         Voyager voyager = pathfinderRobot.voyager();
         voyager.setSpeed(1);
         voyager.setAngleTolerance(Angle.fromDeg(3));
-        voyager.setTolerance(1.5);
+        voyager.setTolerance(3);
         drive = new PinpointDrive(hardwareMap, new Pose2d(16.7, -62.2, Math.toRadians(270)));
         telemetry.addData("Initialization", true);
         telemetry.update();
@@ -205,13 +205,12 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
     public void loop() {
         pathfinderRobot.voyager().getOdometry().tick();
         drive.updatePoseEstimate();
-        liftSys.periodic();
         telemetry.addData("Voyager", pathfinderRobot.voyager().getOdometry().getPosition().toString());
         super.loop();
         Pose2d poseEstimate = drive.odometry.getPositionRR();
-        Robot.startPose = poseEstimate;
         telemetry.addData("x", poseEstimate.position.x);
         telemetry.addData("y", poseEstimate.position.y);
         telemetry.addData("heading", poseEstimate.heading);
+        telemetry.update();
     }
 }

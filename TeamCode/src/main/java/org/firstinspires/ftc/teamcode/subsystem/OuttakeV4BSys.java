@@ -12,7 +12,7 @@ public class OuttakeV4BSys extends SubsystemBase {
     public static double PITCH_AWAY = 0.95;
     public static double PITCH_MID = 0.5;
     public static double ARM_MID = 0.5;
-    public static double ARM_HOME = 0.7;
+    public static double ARM_HOME = 0.67;
     public static double ARM_AWAY= 0.2;
 
     public static double ARM_HOME_SPECIMEN = 0.18;

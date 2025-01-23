@@ -38,8 +38,6 @@ public class MainOpMode extends BaseOpMode {
             Log.e("OpenCv", e.getMessage());
         }
 
-
-
         gb1(GamepadKeys.Button.DPAD_LEFT).toggleWhenPressed(outtakeClawSys.grab(), outtakeClawSys.release());
 
         gb1(GamepadKeys.Button.RIGHT_BUMPER).toggleWhenPressed(
@@ -55,7 +53,7 @@ public class MainOpMode extends BaseOpMode {
                         intakeClawSys.release(),
                         new WaitCommand(150),
                         new InstantCommand(pipeline::disableTracking),
-                        intakeV4bSys.goToPos(POS_DOWN),
+                        intakeV4bSys.goToPos(POS_DOWN - 0.05),
                         new WaitCommand(100),
                         intakeClawSys.pinch(),
                         new WaitCommand(100),
@@ -74,7 +72,7 @@ public class MainOpMode extends BaseOpMode {
                 ),
                 new SequentialCommandGroup(
                         outtakeV4bSys.setPitch(PITCH_HOME),
-                        new WaitCommand(100),
+                        new WaitCommand(200),
                         outtakeV4bSys.setArm(ARM_HOME),
                         new WaitCommand(200),
                         outtakeClawSys.grab(),
@@ -107,7 +105,8 @@ public class MainOpMode extends BaseOpMode {
                         intakeClawSys.release(),
                         new WaitCommand(150),
                         new InstantCommand(pipeline::disableTracking),
-                        intakeV4bSys.goToPos(POS_DOWN),
+                        intakeV4bSys.goToPos(POS_DOWN - 0.05),
+                        intakeV4bSys.goToPos(ROLL_OUT + 0.04),
                         new WaitCommand(100),
                         intakeClawSys.pinch(),
                         new WaitCommand(100),
@@ -119,36 +118,42 @@ public class MainOpMode extends BaseOpMode {
                 )
         );
 
-        gb2(GamepadKeys.Button.START).whenPressed(
-                new InstantCommand(()-> pinpointDrive.pose = new Pose2d(new Vector2d(63.3, -62.2), Math.toRadians(90)))
-        );
+//        gb1(GamepadKeys.Button.START).whenPressed(
+//                new InstantCommand(()-> driveSys.drive.pose = new Pose2d(new Vector2d(63.3, -62.2), Math.toRadians(90)))
+//        );
 
-        gb1(GamepadKeys.Button.DPAD_DOWN).toggleWhenPressed(
-                new InstantCommand(()-> Robot.specimenPickup(pinpointDrive, outtakeV4bSys, outtakeClawSys, liftSys)),
-                new InstantCommand(()-> Robot.specimenScore(pinpointDrive, outtakeV4bSys, outtakeClawSys, liftSys))
-        );
-
-        gb1(GamepadKeys.Button.DPAD_RIGHT).toggleWhenPressed(
-                new ParallelCommandGroup(
-                        new InstantCommand(pipeline::disableTracking),
-                        intakeV4bSys.goToPos(POS_DOWN),
-                        intakeClawSys.pinch()
-                ),
-                new ParallelCommandGroup(
-                        intakeClawSys.release(),
-                        new InstantCommand(pipeline::enableTracking),
-                        intakeV4bSys.goToPos(POS_MID)
-                )
-        );
+//        gb1(GamepadKeys.Button.DPAD_DOWN).toggleWhenPressed(
+//                new InstantCommand(()-> Robot.specimenPickup(driveSys.drive, outtakeV4bSys, outtakeClawSys, liftSys)),
+//                new InstantCommand(()-> Robot.specimenScore(driveSys.drive, outtakeV4bSys, outtakeClawSys, liftSys))
+//        );
+//
+//        gb1(GamepadKeys.Button.BACK).whenPressed(()->DriveSys.AUTOMATION = false);
+//
+//        gb1(GamepadKeys.Button.DPAD_RIGHT).toggleWhenPressed(
+//                new InstantCommand(()-> Robot.samplePickup(driveSys.drive, outtakeV4bSys, outtakeClawSys, liftSys, extendoSys, intakeV4bSys, intakeClawSys, pipeline))
+//        );
 
         gb1(GamepadKeys.Button.LEFT_STICK_BUTTON).toggleWhenPressed(intakeClawSys.pinch(), intakeClawSys.release());
 
+        gb1(GamepadKeys.Button.BACK).whenPressed(transmissionSys.shiftUp());
+
+        gb1(GamepadKeys.Button.START).whenPressed(
+                new SequentialCommandGroup(
+                        liftSys.goTo(LiftSys.HANG),
+                        new WaitCommand(100),
+                        new ParallelCommandGroup(
+                                liftSys.vibrate(1500, 0.2),
+                                transmissionSys.shiftUp()
+                        )
+                )
+        );
+
         driveSys.setDefaultCommand(driveSys.drive(
-                gamepadEx1::getLeftX,
                 gamepadEx1::getLeftY,
+                gamepadEx1::getLeftX,
                 gamepadEx1::getRightX
         ));
 
-        transmissionSys.setDefaultCommand(transmissionSys.manualControl(gamepadEx2::getLeftY));
+        transmissionSys.setDefaultCommand(transmissionSys.manualControl(gamepadEx1::getRightY));
     }
 }

@@ -39,7 +39,7 @@ public class VoyagerCommand implements Command {
                 voyager.goTo(nextPoint);
                 points.remove(nextPoint);
                 if (points.size() == 1) {
-                    voyager.setAngleTolerance(Angle.fromDeg(3));
+                    voyager.setAngleTolerance(Angle.fromDeg(2));
                     voyager.setTolerance(.7);
                 }
             } else {

@@ -17,12 +17,14 @@ import org.firstinspires.ftc.teamcode.util.ProfiledPIDFController;
 import java.util.function.DoubleSupplier;
 @Config
 public class LiftSys extends SubsystemBase {
+
     private final MotorEx top, bottem;
     private final Motor.Encoder encoder;
     private final TouchSensor touch;
 
     public static int NONE = 0;
     public static int LOW_RUNG = 0;
+    public static int HANG = 1200;
     public static int HIGH_RUNG = 950;
     public static int LOW_BUCKET = 740;
     public static int HIGH_BUCKET = 2000;
@@ -115,13 +117,14 @@ public class LiftSys extends SubsystemBase {
 
     @Override
     public void periodic() {
-        //TODO: Fix this bulk reads implementation
+        //TODO: Fix this bulk reads implementation. Also fix manual control.
 
         if (!(top.motorEx.isOverCurrent() && bottem.motorEx.isOverCurrent()) && !hang) {
             if (touch.isPressed()) {
                 encoder.reset();
-            }
-            if (doubleSupplier.getAsDouble() != 0) {
+                top.set(0);
+                bottem.set(0);
+            } else if (doubleSupplier.getAsDouble() != 0) {
                 top.set(doubleSupplier.getAsDouble()/slowFactor);
                 bottem.set(doubleSupplier.getAsDouble()/slowFactor);
 

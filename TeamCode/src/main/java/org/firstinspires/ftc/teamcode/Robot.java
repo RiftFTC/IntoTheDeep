@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.util.ActionCommand;
 import org.firstinspires.ftc.teamcode.util.math.Pose2D;
 import org.firstinspires.ftc.teamcode.util.math.Precision;
 import org.opencv.core.Point;
+import xyz.devmello.voyager.robot.Drive;
 
 import java.util.ArrayList;
 
@@ -22,6 +23,8 @@ public class Robot {
     public static Pose2d startPose = new Pose2d(new Vector2d(0,0), Math.toRadians(90));
 
     public static void specimenScore(PinpointDrive drive, OuttakeV4BSys outtakeV4BSys, OuttakeClawSys outtakeClawSys, LiftSys liftSys) {
+        DriveSys.AUTOMATION = true;
+        drive.setBrake();
         Action score = drive.actionBuilder(drive.pose)
                 .strafeToLinearHeading(new Vector2d(8, -36), Math.toRadians(270))
                 .build();
@@ -38,12 +41,16 @@ public class Robot {
                         outtakeV4BSys.away(),
                         liftSys.goTo(LiftSys.HIGH_RUNG-400),
                         new WaitCommand(200),
-                        outtakeClawSys.release()
+                        outtakeClawSys.release(),
+                        new InstantCommand(drive::setCoast),
+                        new InstantCommand(()->DriveSys.AUTOMATION = false)
                 )
         );
     }
 
     public static void specimenPickup(PinpointDrive drive, OuttakeV4BSys outtakeV4BSys, OuttakeClawSys outtakeClawSys, LiftSys liftSys) {
+        DriveSys.AUTOMATION = true;
+        drive.setBrake();
         Action pickup = drive.actionBuilder(drive.pose)
                 .strafeToLinearHeading(new Vector2d(34.7, -58), Math.toRadians(90))
                 .build();
@@ -55,13 +62,17 @@ public class Robot {
                                 liftSys.goTo(LiftSys.NONE),
                                 outtakeV4BSys.specimen()
                         )
-                )
+                ),
+                new InstantCommand(drive::setCoast),
+                new InstantCommand(()->DriveSys.AUTOMATION = false)
         );
 
     }
 
     public static void samplePickup(PinpointDrive drive, OuttakeV4BSys outtakeV4BSys, OuttakeClawSys outtakeClawSys, LiftSys liftSys, ExtendoSys extendoSys, IntakeV4bSys intakeV4bSys, IntakeClawSys intakeClawSys, SampleTrackPipeline pipeline) {
         IntakeClawSys.AUTO = true;
+        DriveSys.AUTOMATION = true;
+        drive.setBrake();
         double xCoverageInches = 14.80314960629921;
         double yCoverageInches = 10.7440945;
         double cameraOffsetInches = 1;
@@ -111,7 +122,6 @@ public class Robot {
 
         schedule(
                 new SequentialCommandGroup(
-
                         new ParallelCommandGroup(
                                 new ActionCommand(goTo),
                                 intakeClawSys.rotateYaw(angle)
@@ -126,7 +136,9 @@ public class Robot {
                                 extendoSys.goTo(ExtendoSys.EXTENDO_HOME)
                         )
                         //implement a transfer to the outtake
-                )
+                ),
+                new InstantCommand(drive::setCoast),
+                new InstantCommand(()->DriveSys.AUTOMATION = false)
         );
 
         IntakeClawSys.AUTO = false;
@@ -139,4 +151,6 @@ public class Robot {
     public static void schedule(Command... cmd) {
         CommandScheduler.getInstance().schedule(cmd);
     }
+
+
 }
