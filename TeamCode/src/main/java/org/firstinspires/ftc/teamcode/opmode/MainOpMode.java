@@ -119,6 +119,7 @@ public class MainOpMode extends BaseOpMode {
         );
 
         //TODO: For Automations, add the entire command and figure out how to dynamically generate commands.
+        //Issue URL: https://github.com/RiftFTC/IntoTheDeep/issues/4
         //  Goal is to delete the Robot Class.
         //  Re-enable the automations as well before competition.
 
@@ -139,6 +140,7 @@ public class MainOpMode extends BaseOpMode {
 
 
         //TODO: Optimize the button placements to make everything a lot easier.
+        //Issue URL: https://github.com/RiftFTC/IntoTheDeep/issues/3
         gb1(GamepadKeys.Button.START).whenPressed(
                 new SequentialCommandGroup(
                         liftSys.goTo(LiftSys.HANG),
