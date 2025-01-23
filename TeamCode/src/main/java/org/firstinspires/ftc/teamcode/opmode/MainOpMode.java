@@ -63,6 +63,7 @@ public class MainOpMode extends BaseOpMode {
                         extendoSys.goTo(ExtendoSys.EXTENDO_HOME)
                 )
         );
+
         gb1(GamepadKeys.Button.LEFT_BUMPER).toggleWhenPressed(
                 new SequentialCommandGroup(
                         outtakeClawSys.release(),
@@ -106,7 +107,6 @@ public class MainOpMode extends BaseOpMode {
                         new WaitCommand(150),
                         new InstantCommand(pipeline::disableTracking),
                         intakeV4bSys.goToPos(POS_DOWN - 0.05),
-                        intakeV4bSys.goToPos(ROLL_OUT + 0.04),
                         new WaitCommand(100),
                         intakeClawSys.pinch(),
                         new WaitCommand(100),
@@ -117,6 +117,10 @@ public class MainOpMode extends BaseOpMode {
                         extendoSys.goTo(ExtendoSys.EXTENDO_HOME)
                 )
         );
+
+        //TODO: For Automations, add the entire command and figure out how to dynamically generate commands.
+        //  Goal is to delete the Robot Class.
+        //  Re-enable the automations as well before competition.
 
 //        gb1(GamepadKeys.Button.START).whenPressed(
 //                new InstantCommand(()-> driveSys.drive.pose = new Pose2d(new Vector2d(63.3, -62.2), Math.toRadians(90)))
@@ -133,10 +137,8 @@ public class MainOpMode extends BaseOpMode {
 //                new InstantCommand(()-> Robot.samplePickup(driveSys.drive, outtakeV4bSys, outtakeClawSys, liftSys, extendoSys, intakeV4bSys, intakeClawSys, pipeline))
 //        );
 
-        gb1(GamepadKeys.Button.LEFT_STICK_BUTTON).toggleWhenPressed(intakeClawSys.pinch(), intakeClawSys.release());
 
-        gb1(GamepadKeys.Button.BACK).whenPressed(transmissionSys.shiftUp());
-
+        //TODO: Optimize the button placements to make everything a lot easier.
         gb1(GamepadKeys.Button.START).whenPressed(
                 new SequentialCommandGroup(
                         liftSys.goTo(LiftSys.HANG),

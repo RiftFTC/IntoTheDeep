@@ -117,7 +117,6 @@ public class LiftSys extends SubsystemBase {
 
     @Override
     public void periodic() {
-        //TODO: Fix this bulk reads implementation. Also fix manual control.
         //Issue URL: https://github.com/RiftFTC/IntoTheDeep/issues/2
 
         if (!(top.motorEx.isOverCurrent() && bottem.motorEx.isOverCurrent()) && !hang) {
