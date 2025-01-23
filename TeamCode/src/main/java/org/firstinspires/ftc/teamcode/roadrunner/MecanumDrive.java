@@ -248,6 +248,7 @@ public class MecanumDrive {
     }
 
     //TODO: Implement better changes for changing motor behavior.
+    //Issue URL: https://github.com/RiftFTC/IntoTheDeep/issues/1
     public void setBrake() {
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
