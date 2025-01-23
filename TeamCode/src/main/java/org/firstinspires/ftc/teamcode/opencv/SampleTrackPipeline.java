@@ -270,7 +270,7 @@ public class SampleTrackPipeline extends OpenCvPipeline {
     }
 
 
-
+    //TODO: Add a time based cap so we don't over extend.
     public void getAction(PinpointDrive drive, IntakeClawSys intakeClaw, IntakeV4bSys intakeV4bSys, ExtendoSys extendoSys, OuttakeV4BSys outtakeV4BSys, OuttakeClawSys outtakeClawSys, LiftSys liftSys) {
         GoToStone sample = calculateMovementPose(drive.pose);
         if (sample != null) {

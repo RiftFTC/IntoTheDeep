@@ -26,6 +26,7 @@ import org.firstinspires.ftc.teamcode.subsystem.*;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+import xyz.devmello.voyager.time.ElapsedTimer;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class AutoBaseOpMode extends OpMode {
     protected GamepadEx gamepadEx1, gamepadEx2;
     protected TouchSensor touch;
     protected MotorEx fl, fr, bl, br, lil, lir, hang;
-
+    protected ElapsedTimer elapsedTimer;
     protected SimpleServo ipr, iPitch, extL, extR, iClaw, iYaw, oClaw, oPitch, oPos, transmission;
     protected PinpointDrive drive;
     protected ExtendoSys extendoSys;
@@ -129,6 +130,7 @@ public class AutoBaseOpMode extends OpMode {
     }
 
     public void setupMisc() {
+        elapsedTimer = new ElapsedTimer();
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
         pipeline = new SampleTrackPipeline(team);
@@ -165,4 +167,8 @@ public class AutoBaseOpMode extends OpMode {
         Robot.startPose = drive.pose;
     }
 
+    @Override
+    public void start() {
+        elapsedTimer.start();
+    }
 }
