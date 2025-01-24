@@ -164,6 +164,7 @@ public class AutoBaseOpMode extends OpMode {
     @Override
     public void stop() {
         super.stop();
+        CommandScheduler.getInstance().reset();
         elapsedTimer.toString() ;
         IntakeClawSys.AUTO = false;
         Robot.startPose = drive.pose;

@@ -104,13 +104,13 @@ public class BaseOpMode extends CommandOpMode {
     public void initSys() {
         driveSys = new DriveSys(hardwareMap);
         extendoSys = new ExtendoSys(extL,extR);
-        liftSys = new LiftSys(lil, lir, gamepadEx1::getRightY, touch);
+        liftSys = new LiftSys(lil, lir, gamepadEx2::getRightY, touch);
         intakeV4bSys = new IntakeV4bSys(ipr, iPitch);
         intakeClawSys = new IntakeClawSys(iClaw, iYaw, ()-> gamepadEx1.getTrigger(LEFT_TRIGGER), () -> gamepadEx1.getTrigger(RIGHT_TRIGGER));
         outtakeClawSys = new OuttakeClawSys(oClaw);
         outtakeV4bSys = new OuttakeV4BSys(oPitch, oPos);
         timeSys = new TimeSys();
-        transmissionSys = new TransmissionSys(transmission, hang, liftSys);
+        transmissionSys = new TransmissionSys(transmission, hang, lir.encoder);
     }
 
     @SuppressLint("SdCardPath")
@@ -161,7 +161,7 @@ public class BaseOpMode extends CommandOpMode {
     @Override
     public void reset() {
         super.reset();
-        gamepadServer.shutdown();
+        //gamepadServer.shutdown();
     }
 
 }

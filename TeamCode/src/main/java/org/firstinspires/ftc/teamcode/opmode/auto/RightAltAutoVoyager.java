@@ -32,6 +32,7 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
     Action preLoad;
     Action dropOff;
     Action score1;
+    Action pickUp1;
     Action pickUp2;
     Action score2;
     Action pickUp3;
@@ -43,14 +44,14 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
         add(new PointXYZ(34, -10, Angle.fromDeg(90)));
         add(new PointXYZ(50, -10, Angle.fromDeg(90)));
         add(new PointXYZ(50, -47, Angle.fromDeg(90)));
-        add(new PointXYZ(50, -6, Angle.fromDeg(90)));
-        add(new PointXYZ(57,-6, Angle.fromDeg(90)));
+        add(new PointXYZ(50, -8, Angle.fromDeg(90)));
+        add(new PointXYZ(57,-8, Angle.fromDeg(90)));
         add(new PointXYZ(57,-47, Angle.fromDeg(90)));
-        add(new PointXYZ(34.7, -57.3, Angle.fromDeg(90)));
+        add(new PointXYZ(34.7, -58.85, Angle.fromDeg(90)));
     }};
 
     public static double pickupN = -57.3;
-    public static double dropOffN = -36.8;
+    public static double dropOffN = -37.1;
 
     @Override
     public void init() {
@@ -59,7 +60,7 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
         Voyager voyager = pathfinderRobot.voyager();
         voyager.setSpeed(1);
         voyager.setAngleTolerance(Angle.fromDeg(3));
-        voyager.setTolerance(3);
+        voyager.setTolerance(2);
         drive = new PinpointDrive(hardwareMap, new Pose2d(16.7, -62.2, Math.toRadians(270)));
         telemetry.addData("Initialization", true);
         telemetry.update();
@@ -73,27 +74,29 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
                 .strafeToLinearHeading(new Vector2d(20, -36), Math.toRadians(90))
                 .build();
 
+        //pickUp1 = drive.actionBuilder()
+
         score1 = drive.actionBuilder(new Pose2d(34.7, pickupN, Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(4, dropOffN), Math.toRadians(270),drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .strafeToLinearHeading(new Vector2d(7, dropOffN), Math.toRadians(270),drive.defaultVelConstraint, drive.defaultAccelConstraint)
                 .build();
 
-        pickUp2 = drive.actionBuilder(new Pose2d(4, dropOffN, Math.toRadians(270)))
+        pickUp2 = drive.actionBuilder(new Pose2d(7, dropOffN, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(34.7, pickupN), Math.toRadians(90), drive.defaultVelConstraint, drive.defaultAccelConstraint)
                 .build();
 
         score2 = drive.actionBuilder(new Pose2d(34.7, pickupN, Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(6, dropOffN), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .strafeToLinearHeading(new Vector2d(10, dropOffN), Math.toRadians(270), drive.defaultVelConstraint, drive.defaultAccelConstraint)
                 .build();
 
-        pickUp3 = drive.actionBuilder(new Pose2d(6, dropOffN, Math.toRadians(270)))
+        pickUp3 = drive.actionBuilder(new Pose2d(10, dropOffN, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(34.7, pickupN), Math.toRadians(90), drive.defaultVelConstraint, drive.defaultAccelConstraint)
                 .build();
 
         score3 = drive.actionBuilder(new Pose2d(34.7, pickupN, Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(8, dropOffN), Math.toRadians(270), drive.maxVelConstraint, drive.maxAccelConstraint)
+                .strafeToLinearHeading(new Vector2d(2, dropOffN - 0.5), Math.toRadians(270))
                 .build();
 
-        park = drive.actionBuilder(new Pose2d(8, dropOffN, Math.toRadians(270)))
+        park = drive.actionBuilder(new Pose2d(2, dropOffN - 0.5, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(24, -45), Math.toRadians(315), drive.defaultVelConstraint, drive.maxAccelConstraint)
                 .build();
 
@@ -104,7 +107,7 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
                                 new ActionCommand(preLoad),
                                 liftSys.goTo(LiftSys.HIGH_RUNG)
                         ),
-                        outtakeV4bSys.away(),
+                        outtakeV4bSys.specimenScore(),
                         new WaitCommand(250),
                         //outtake v4b sm shit
                         liftSys.goTo(LiftSys.HIGH_RUNG - 400),
@@ -128,7 +131,7 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
                         ),
                         //SCORE 1
                         outtakeV4bSys.specimen(),
-                        new WaitCommand(500),
+                        new WaitCommand(1000),
                         outtakeClawSys.grab(),
                         new WaitCommand(150),
                         outtakeV4bSys.mid(),
@@ -138,7 +141,7 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
                                         liftSys.goTo(LiftSys.HIGH_RUNG)
                                 )
                         ),
-                        outtakeV4bSys.away(),
+                        outtakeV4bSys.specimenScore(),
                         //outtake v4b some shit
                         liftSys.goTo(LiftSys.HIGH_RUNG-400),
                         new WaitCommand(200),
@@ -160,7 +163,7 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
                                 new ActionCommand(score2),
                                 liftSys.goTo(LiftSys.HIGH_RUNG)
                         ),
-                        outtakeV4bSys.away(),
+                        outtakeV4bSys.specimenScore(),
                         //score sm shit
                         liftSys.goTo(LiftSys.HIGH_RUNG - 400),
                         outtakeClawSys.release(),
@@ -182,7 +185,8 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
                                 new ActionCommand(score3),
                                 liftSys.goTo(LiftSys.HIGH_RUNG)
                         ),
-                        outtakeV4bSys.away(),
+                        new WaitCommand(500),
+                        outtakeV4bSys.specimenScore(),
                         liftSys.goTo(LiftSys.HIGH_RUNG - 400),
                         outtakeClawSys.release(),
                         new WaitCommand(150),
@@ -193,9 +197,6 @@ public class RightAltAutoVoyager extends AutoBaseOpMode{
                                 liftSys.goTo(LiftSys.NONE),
                                 outtakeV4bSys.mid()
                         ),
-                        extendoSys.goTo(ExtendoSys.EXTENDO_MAX),
-                        intakeV4bSys.goToPos(IntakeV4bSys.POS_DOWN),
-                        intakeV4bSys.goToRoll(IntakeV4bSys.ROLL_OUT),
                         new InstantCommand(()->drive.setTolerance(1, 4))
                 )
         );

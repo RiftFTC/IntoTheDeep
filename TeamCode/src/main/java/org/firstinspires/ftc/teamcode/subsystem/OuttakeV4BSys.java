@@ -13,7 +13,7 @@ public class OuttakeV4BSys extends SubsystemBase {
     public static double PITCH_MID = 0.5;
     public static double ARM_MID = 0.5;
     public static double ARM_HOME = 0.67;
-    public static double ARM_AWAY= 0.2;
+    public static double ARM_AWAY= 0.3;
 
     public static double ARM_HOME_SPECIMEN = 0.18;
     public static double PITCH_HOME_SPECIMEN = 0.9;
@@ -42,7 +42,6 @@ public class OuttakeV4BSys extends SubsystemBase {
         pitch.setPosition(rot);
     }
 
-
     public Command mid() {
         return new InstantCommand(()->{
             move(ARM_MID, PITCH_MID);
@@ -55,13 +54,16 @@ public class OuttakeV4BSys extends SubsystemBase {
         }, this);
     }
 
-
     public Command home() {
         return new InstantCommand(() -> move(ARM_HOME, PITCH_HOME), this);
     }
-
+    
     public Command away() {
         return new InstantCommand(() -> move(ARM_AWAY, PITCH_AWAY), this);
+    }
+
+    public Command specimenScore() {
+        return new InstantCommand(() -> move(0.2, PITCH_AWAY), this);
     }
 
     public Command touch() {

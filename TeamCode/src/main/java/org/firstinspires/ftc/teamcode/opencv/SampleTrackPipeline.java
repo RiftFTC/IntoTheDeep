@@ -200,6 +200,7 @@ public class SampleTrackPipeline extends OpenCvPipeline {
                 return RED;
         }
     }
+
     public ArrayList<AnalyzedStone> getDetectedStones() {
         return clientStoneList;
     }
@@ -213,7 +214,7 @@ public class SampleTrackPipeline extends OpenCvPipeline {
         double closestDistance = Double.MAX_VALUE;
 
         for (AnalyzedStone stone : clientStoneList) {
-            double distanceToCenter = Math.hypot(stone.center.x - frameCenter.x, stone.center.y - frameCenter.y);
+            double distanceToCenter = Math.hypot(stone.center.x - frameCenter.x, stone.center.y - frameCenter.y - 60);
             if (distanceToCenter < closestDistance) {
                 closestDistance = distanceToCenter;
                 closestStone = stone;
@@ -261,8 +262,9 @@ public class SampleTrackPipeline extends OpenCvPipeline {
         double realWorldY = (deltaY / frameSize.height) * yCoverageInches - yOffset;
 
         // Log the results
-        Log.i("goTo X", String.valueOf(realWorldX));
-        Log.i("goTo Y", String.valueOf(realWorldY));
+        Log.i("FrameSize", "Width: " + frameSize.width + ", Height: " + frameSize.height);
+        Log.i("Delta", "deltaX: " + deltaX + ", deltaY: " + deltaY);
+        Log.i("RealWorld", "X: " + realWorldX + ", Y: " + realWorldY);
 
         return new GoToStone(
                 new Vector2d(currentPose.position.x + realWorldY, currentPose.position.y + realWorldX),
@@ -327,7 +329,8 @@ public class SampleTrackPipeline extends OpenCvPipeline {
                 .strafeToLinearHeading(new Vector2d(23, 7), Math.toRadians(0))
                 .build();
 
-        if (elapsedTimer.elapsedSeconds() < 27) {
+        //elapsedTimer.elapsedSeconds() < 28
+        if (true) {
             return new SequentialCommandGroup(
                     new ParallelCommandGroup(
                             new ActionCommand(score),

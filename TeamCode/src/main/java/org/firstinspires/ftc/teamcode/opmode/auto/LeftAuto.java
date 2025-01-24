@@ -241,9 +241,9 @@ public class LeftAuto extends AutoBaseOpMode{
                         new SequentialCommandGroup(
                                 outtakeV4bSys.setPitch(1),
                                 outtakeV4bSys.setArm(0.3),
-                                new WaitCommand(300),
+                                new WaitCommand(500),
                                 outtakeClawSys.release(),
-                                new WaitCommand(400)
+                                new WaitCommand(300)
                         ),
                         new ParallelCommandGroup(
                                 outtakeV4bSys.mid(),
@@ -255,7 +255,8 @@ public class LeftAuto extends AutoBaseOpMode{
                         intakeV4bSys.goToPos(0.6),
                         intakeV4bSys.goToRoll(0.8),
                         new WaitCommand(400),
-                        new InstantCommand(()-> pipeline.getAction(drive,intakeClawSys, intakeV4bSys,extendoSys, outtakeV4bSys, outtakeClawSys, liftSys, elapsedTimer))
+                        liftSys.goTo(0)
+                        //new InstantCommand(()-> pipeline.getAction(drive,intakeClawSys, intakeV4bSys,extendoSys, outtakeV4bSys, outtakeClawSys, liftSys, elapsedTimer))
                 )
         );
     }

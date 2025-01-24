@@ -12,10 +12,16 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.opencv.SampleTrackPipeline;
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
+import org.firstinspires.ftc.teamcode.subsystem.IntakeClawSys;
+import org.firstinspires.ftc.teamcode.subsystem.IntakeV4bSys;
 import org.firstinspires.ftc.teamcode.util.math.Precision;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+
+import static org.firstinspires.ftc.teamcode.subsystem.IntakeClawSys.YAW_LEFT;
+import static org.firstinspires.ftc.teamcode.subsystem.IntakeClawSys.YAW_RIGHT;
+
 @Config
 @TeleOp(name = "Vision Tuner", group = "Tuning")
 public class VisionTuner extends LinearOpMode {
@@ -26,6 +32,7 @@ public class VisionTuner extends LinearOpMode {
     protected SampleTrackPipeline pipeline;
     @Override
     public void runOpMode() throws InterruptedException {
+        IntakeClawSys.TRACK = true;
         ActivityManager activityManager = (ActivityManager) hardwareMap.appContext.getSystemService(Context.ACTIVITY_SERVICE);
         ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
         SimpleServo ipr = new SimpleServo(hardwareMap, "iPos", 0, 255);
@@ -55,8 +62,8 @@ public class VisionTuner extends LinearOpMode {
         FtcDashboard.getInstance().startCameraStream(camera, 0);
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
-            ipr.setPosition(0.57);
-            iPitch.setPosition(0.76);
+            ipr.setPosition(IntakeV4bSys.POS_MID);
+            iPitch.setPosition(0.8);
             if (gamepad1.a) {
                 yaw.setPosition(yawL);
             } else if (gamepad1.b) {
@@ -67,6 +74,7 @@ public class VisionTuner extends LinearOpMode {
 //            } else {
 //                yaw.setPosition(Precision.calculateWeightedValue(yawL, yawR, ((pipeline.getAngle() % 179) / 180)));
 //            }
+            yaw.setPosition(Math.round(Precision.calculateWeightedValue(YAW_LEFT, YAW_RIGHT, (pipeline.getAngle() % 179) / 180) * 5) / 5.0);
             activityManager.getMemoryInfo(memoryInfo);
             telemetry.addData("Memory Free", (float) memoryInfo.availMem / (float) memoryInfo.totalMem * 100.0F);
             telemetry.addData("Angle", pipeline.getAngle());

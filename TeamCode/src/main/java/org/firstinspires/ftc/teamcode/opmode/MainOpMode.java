@@ -124,14 +124,14 @@ public class MainOpMode extends BaseOpMode {
         //  Goal is to delete the Robot Class.
         //  Re-enable the automations as well before competition.
 
-//        gb1(GamepadKeys.Button.START).whenPressed(
-//                new InstantCommand(()-> driveSys.drive.pose = new Pose2d(new Vector2d(63.3, -62.2), Math.toRadians(90)))
-//        );
+        gb1(GamepadKeys.Button.START).whenPressed(
+                new InstantCommand(()-> driveSys.drive.pose = new Pose2d(new Vector2d(63.3, -62.2), Math.toRadians(90)))
+        );
 
-//        gb1(GamepadKeys.Button.DPAD_DOWN).toggleWhenPressed(
-//                new InstantCommand(()-> Robot.specimenPickup(driveSys.drive, outtakeV4bSys, outtakeClawSys, liftSys)),
-//                new InstantCommand(()-> Robot.specimenScore(driveSys.drive, outtakeV4bSys, outtakeClawSys, liftSys))
-//        );
+        gb1(GamepadKeys.Button.DPAD_DOWN).toggleWhenPressed(
+                new InstantCommand(()-> Robot.specimenPickup(driveSys.drive, outtakeV4bSys, outtakeClawSys, liftSys)),
+                new InstantCommand(()-> Robot.specimenScore(driveSys.drive, outtakeV4bSys, outtakeClawSys, liftSys))
+        );
 //
 //        gb1(GamepadKeys.Button.BACK).whenPressed(()->DriveSys.AUTOMATION = false);
 //
@@ -142,16 +142,16 @@ public class MainOpMode extends BaseOpMode {
 
         //TODO: Optimize the button placements to make everything a lot easier.
         //Issue URL: https://github.com/RiftFTC/IntoTheDeep/issues/3
-        gb1(GamepadKeys.Button.START).whenPressed(
-                new SequentialCommandGroup(
-                        liftSys.goTo(LiftSys.HANG),
-                        new WaitCommand(100),
-                        new ParallelCommandGroup(
-                                liftSys.vibrate(1500, 0.2),
-                                transmissionSys.shiftUp()
-                        )
-                )
-        );
+//        gb1(GamepadKeys.Button.START).whenPressed(
+//                new SequentialCommandGroup(
+//                        liftSys.goTo(LiftSys.HANG),
+//                        new WaitCommand(100),
+//                        new ParallelCommandGroup(
+//                                liftSys.vibrate(1500, 0.2),
+//                                transmissionSys.shiftUp()
+//                        )
+//                )
+//        );
 
         driveSys.setDefaultCommand(driveSys.drive(
                 gamepadEx1::getLeftY,

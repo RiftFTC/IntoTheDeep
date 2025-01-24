@@ -13,13 +13,13 @@ public class TransmissionSys extends SubsystemBase {
     private final MotorEx hang;
     public static double TRANSMISSION_UP = 0.3;
     public static double TRANSMISSION_DOWN = 0;
-    private final LiftSys liftSys;
+    private final Motor.Encoder encoder;
     private boolean hanging = false;
 
-    public TransmissionSys(SimpleServo transmissionServo, MotorEx hangMotor, LiftSys liftSys) {
+    public TransmissionSys(SimpleServo transmissionServo, MotorEx hangMotor, Motor.Encoder encoder) {
         this.transmissionServo = transmissionServo;
         this.hang = hangMotor;
-        this.liftSys = liftSys;
+        this.encoder = encoder;
         transmissionServo.setPosition(TRANSMISSION_DOWN);
         hangMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     }
@@ -30,7 +30,7 @@ public class TransmissionSys extends SubsystemBase {
 
     public Command manualControl(DoubleSupplier manualControl) {
         return new RunCommand(() -> {
-            int position = liftSys.getPosition();
+            int position = encoder.getPosition();
             if (hanging && !(position < 250) && !(position > 1750)) {
                 hang.set(manualControl.getAsDouble());
             } else if (position < 250 && manualControl.getAsDouble() > 0 && hanging) {

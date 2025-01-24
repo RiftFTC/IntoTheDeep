@@ -120,12 +120,10 @@ public class LiftSys extends SubsystemBase {
         if (!(top.motorEx.isOverCurrent() && bottem.motorEx.isOverCurrent()) && !hang) {
             if (touch.isPressed()) {
                 encoder.reset();
-                top.set(0);
-                bottem.set(0);
-            } else if (doubleSupplier.getAsDouble() != 0) {
+            }
+            if (doubleSupplier.getAsDouble() != 0) {
                 top.set(doubleSupplier.getAsDouble()/slowFactor);
                 bottem.set(doubleSupplier.getAsDouble()/slowFactor);
-
                 controller.setGoal(encoder.getPosition());
             } else {
                 double output = controller.calculate(encoder.getPosition()) + kG;

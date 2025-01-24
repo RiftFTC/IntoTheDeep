@@ -26,24 +26,26 @@ public class Robot {
         DriveSys.AUTOMATION = true;
         drive.setBrake();
         Action score = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(8, -36), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(8, -37.1), Math.toRadians(270))
                 .build();
 
         schedule(
-                outtakeClawSys.grab(),
-                new WaitCommand(200),
                 new SequentialCommandGroup(
-                        outtakeV4BSys.mid(),
-                        new ParallelCommandGroup(
-                            new ActionCommand(score),
-                            liftSys.goTo(LiftSys.HIGH_RUNG)
-                        ),
-                        outtakeV4BSys.away(),
-                        liftSys.goTo(LiftSys.HIGH_RUNG-400),
-                        new WaitCommand(200),
-                        outtakeClawSys.release(),
-                        new InstantCommand(drive::setCoast),
-                        new InstantCommand(()->DriveSys.AUTOMATION = false)
+                        outtakeClawSys.grab(),
+                        new WaitCommand(300),
+                        new SequentialCommandGroup(
+                                outtakeV4BSys.mid(),
+                                new ParallelCommandGroup(
+                                        new ActionCommand(score),
+                                        liftSys.goTo(LiftSys.HIGH_RUNG)
+                                ),
+                                outtakeV4BSys.specimenScore(),
+                                liftSys.goTo(LiftSys.HIGH_RUNG-400),
+                                new WaitCommand(200),
+                                outtakeClawSys.release(),
+                                new InstantCommand(drive::setCoast),
+                                new InstantCommand(()->DriveSys.AUTOMATION = false)
+                        )
                 )
         );
     }
